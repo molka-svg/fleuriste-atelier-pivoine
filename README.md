@@ -1,4 +1,4 @@
-# Atelier Pivoine — boutique en ligne (projet IRIS M1, B3.2)
+# Atelier Pivoine — boutique en ligne
 
 ![Logo](charte/logo.svg)
 
