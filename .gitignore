@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Cœur de WordPress (se réinstalle)
+wordpress/
+wp-admin/
+wp-includes/
+wp-*.php
+xmlrpc.php
+index.php
+license.txt
+readme.html
+
+# Extensions tierces et médias (se réinstallent / sont dans la sauvegarde)
+wp-content/plugins/
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db
