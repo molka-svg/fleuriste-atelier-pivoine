@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100">
+  <!-- Icône d'onglet : la fleur du logo officiel (charte/logo.svg), sans le texte -->
+  <circle r="22" cx="0" cy="-26" fill="#D9677C"/>
+  <circle r="22" cx="25" cy="-8" fill="#D9677C"/>
+  <circle r="22" cx="15" cy="22" fill="#D9677C"/>
+  <circle r="22" cx="-15" cy="22" fill="#D9677C"/>
+  <circle r="22" cx="-25" cy="-8" fill="#D9677C"/>
+  <circle r="14" fill="#F3B6C1"/>
+  <circle r="6" fill="#2F4A3A"/>
+</svg>

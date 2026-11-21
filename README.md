@@ -30,6 +30,8 @@ bash scripts/restauration.sh
 
 ## Choix de design
 ## Sources des images
+Photos du thème : voir [theme/atelier-pivoine/images/CREDITS.md](theme/atelier-pivoine/images/CREDITS.md) (Unsplash et Pexels).
+
 | Fichier | Auteur | Source (URL) |
 |---|---|---|
 
