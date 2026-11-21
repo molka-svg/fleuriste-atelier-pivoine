@@ -12,7 +12,7 @@
 
 ## 1. L'âme de l'atelier
 
-Une petite boutique du 11e, quelques rues après Oberkampf. Le rideau se lève à 9 h, les seaux sont déjà pleins : renoncules, eucalyptus, branches de saison arrivées à l'aube. Camille Rose compose chaque bouquet à la main, sur un grand plan de travail en bois, et l'emballe dans un papier kraft noué d'un ruban.
+Une petite boutique du 11e, quelques rues après Oberkampf. Le rideau se lève à 7 h, les seaux sont déjà pleins : renoncules, eucalyptus, branches de saison arrivées à l'aube. Camille Rose compose chaque bouquet à la main, sur un grand plan de travail en bois, et l'emballe dans un papier kraft noué d'un ruban.
 
 **Atelier Pivoine, c'est un carnet d'herbier ouvert sur le comptoir** : naturel, précis, chaleureux. Le site doit donner la même impression qu'en poussant la porte de la boutique : **le calme du vert, l'éclat d'une fleur, la douceur du papier**.
 
