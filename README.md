@@ -21,7 +21,7 @@ Accueil · Fiche produit · Panier · Commande · Vue téléphone (390 px) · Bo
 
 ## Relancer la boutique
 ```bash
-git clone https://github.com/<compte>/fleuriste-atelier-pivoine.git
+git clone https://github.com/molka-svg/fleuriste-atelier-pivoine
 cd fleuriste-atelier-pivoine
 cp .env.example .env        # puis remplir les 4 valeurs (mots de passe inventés)
 bash scripts/restauration.sh
