@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier Pivoine — maquette du parcours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* Mêmes variables que theme/atelier-pivoine/style.css (design B) */
+:root{
+  --green:#2F4A3A; --pink:#D9677C; --cream:#FBF6EF; --ink:#1F1F1F; --petal:#F3B6C1;
+  --white:#FFFFFF; --muted:#726E68; --border:rgba(47,74,58,.15);
+  --petal-soft:color-mix(in srgb,var(--petal) 45%,var(--cream));
+  --font-title:'DM Serif Display',Georgia,serif;
+  --font-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --radius:24px; --radius-xl:32px;
+  --shadow:0 24px 50px -26px rgba(47,74,58,.55);
+  --ease:cubic-bezier(.22,.61,.36,1); --gutter:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+p{margin-top:0}
+h1,h2,h3,h4{font-family:var(--font-title);font-weight:400;line-height:1.05;color:var(--green);margin-top:0}
+h1{font-size:clamp(2.8rem,7vw,6.4rem)}
+h2{font-size:clamp(2.2rem,4.6vw,4rem)}
+h3{font-size:1.6rem}
+h1 em,h2 em{font-style:italic;color:var(--pink)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Bandeau maquette */
+.mock-bar{background:var(--ink);color:var(--cream);font-size:.82rem;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:7px 16px;text-align:center}
+.mock-bar button{background:none;border:1px solid rgba(251,246,239,.4);color:var(--cream);border-radius:999px;padding:2px 12px;cursor:pointer;font-size:.8rem}
+.mock-bar button:hover{background:rgba(251,246,239,.15)}
+
+/* Boutons */
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:15px 30px;border-radius:999px;font-weight:600;font-size:1rem;border:0;cursor:pointer;transition:transform .3s var(--ease),background .3s,box-shadow .3s;text-align:center}
+.btn-primary{background:var(--pink);color:var(--white)}
+.btn-primary:hover{background:var(--green);transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(0,0,0,.5)}
+.btn-secondary{background:var(--green);color:var(--cream)}
+.btn-secondary:hover{background:var(--pink);transform:translateY(-2px)}
+.btn-ghost{background:var(--white);color:var(--green);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--petal-soft)}
+.btn-glass{color:var(--cream);background:rgba(251,246,239,.16);border:1px solid rgba(251,246,239,.55);backdrop-filter:blur(8px)}
+.btn-glass:hover{background:rgba(251,246,239,.3)}
+.btn-block{width:100%}
+.link{font-weight:600;border-bottom:1px solid var(--pink);padding-bottom:2px;cursor:pointer;background:none;border-top:0;border-left:0;border-right:0;color:var(--green)}
+.link:hover{color:var(--pink)}
+
+/* En-tête */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(251,246,239,.92);backdrop-filter:saturate(1.4) blur(14px);padding:10px 5%;transition:box-shadow .3s}
+.site-header.is-scrolled{box-shadow:0 10px 30px -22px rgba(47,74,58,.55)}
+.header-inner{max-width:1500px;margin:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px}
+.site-logo{width:210px;max-height:72px;object-fit:contain}
+.nav{display:flex;gap:6px;padding:6px;background:var(--white);border:1px solid var(--border);border-radius:999px}
+.nav a{padding:9px 20px;border-radius:999px;font-size:.95rem;font-weight:500;transition:background .3s,color .3s}
+.nav a:hover{background:var(--petal-soft)}
+.nav a[aria-current="page"]{background:var(--green);color:var(--cream)}
+.header-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.account-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;border:1px solid var(--border);background:var(--white);color:var(--green);font-weight:600;font-size:.92rem;cursor:pointer}
+.account-btn:hover{background:var(--petal-soft)}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--cream);display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
+.cart-btn{display:inline-flex;align-items:center;gap:10px;background:var(--pink);color:var(--white);padding:12px 22px;border-radius:999px;font-weight:600;font-size:.95rem;border:0;cursor:pointer;transition:background .3s,transform .3s var(--ease)}
+.cart-btn:hover{background:var(--green)}
+.cart-count{min-width:22px;height:22px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--cream);color:var(--green);font-size:.75rem;font-weight:700}
+.cart-count.is-empty{display:none}
+.cart-btn.bump{animation:bump .5s var(--ease)}
+@keyframes bump{40%{transform:scale(1.1)}}
+.menu-toggle{display:none;width:46px;height:46px;border:1px solid var(--border);border-radius:50%;background:var(--white);cursor:pointer;position:relative;padding:0}
+.menu-toggle span{position:absolute;left:14px;right:14px;height:2px;background:var(--green);border-radius:2px;transition:transform .3s,top .3s}
+.menu-toggle span:nth-child(1){top:18px}.menu-toggle span:nth-child(2){top:26px}
+.menu-open .menu-toggle span:nth-child(1){top:22px;transform:rotate(45deg)}
+.menu-open .menu-toggle span:nth-child(2){top:22px;transform:rotate(-45deg)}
+
+main{min-height:60vh}
+.wrap{max-width:1320px;margin:auto;padding:0 var(--gutter)}
+.eyebrow{color:var(--pink);font-size:.76rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;margin-bottom:14px}
+.muted{color:var(--muted)}
+
+/* Hero */
+.hero{position:relative;isolation:isolate;min-height:min(680px,calc(100vh - 140px));margin:10px var(--gutter) 0;border-radius:var(--radius-xl);overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--green)}
+.hero-bg{position:absolute;inset:0;z-index:-1;background:linear-gradient(155deg,var(--pink),var(--petal))}
+.hero-bg img{width:100%;height:100%;object-fit:cover;animation:zoom 16s var(--ease) infinite alternate}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(47,74,58,.2),rgba(47,74,58,.68))}
+@keyframes zoom{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+.hero-content{max-width:860px;padding:80px 6% 100px;color:var(--cream)}
+.hero .eyebrow{color:var(--petal)}
+.hero h1{color:var(--cream);line-height:.95;margin-bottom:22px}
+.hero h1 em{color:var(--petal)}
+.hero p.lead{max-width:520px;margin:0 auto 30px;font-size:1.12rem}
+.hero-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
+.reassurance{position:relative;z-index:3;display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:-30px 5% 0}
+.reassurance div{display:flex;gap:10px;align-items:center;background:var(--cream);border:1px solid var(--border);color:var(--green);padding:12px 22px;border-radius:999px;font-size:.92rem;font-weight:600;box-shadow:0 16px 30px -18px rgba(47,74,58,.55)}
+.reassurance span{color:var(--pink)}
+
+/* Bandeau de page (boutique, atelier…) */
+.page-head{margin:10px var(--gutter) 0;border-radius:var(--radius-xl);background:var(--petal-soft);padding:64px 6% 56px;text-align:center}
+.page-head h1{font-size:clamp(2.6rem,6vw,5rem);margin-bottom:14px}
+.page-head p{max-width:560px;margin:0 auto}
+.crumbs{font-size:.85rem;color:var(--muted);margin-bottom:18px}
+.crumbs a:hover{color:var(--pink)}
+
+/* Boutique */
+.shop-tools{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin:40px 0 26px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--border);background:var(--white);color:var(--green);padding:8px 18px;border-radius:999px;font-weight:500;font-size:.92rem;cursor:pointer}
+.chip:hover{background:var(--petal-soft)}
+.chip[aria-pressed="true"]{background:var(--green);color:var(--cream);border-color:var(--green)}
+.sort{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted)}
+.sort select{border:1px solid var(--border);background:var(--white);border-radius:999px;padding:8px 14px;color:var(--green);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px 20px}
+.card{display:flex;flex-direction:column}
+.card-img{position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,var(--petal),var(--cream))}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.card:hover .card-img img{transform:scale(1.05)}
+.placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--green);font-family:var(--font-title);font-style:italic;font-size:1.5rem;padding:20px;text-align:center}
+.badge{position:absolute;top:14px;left:14px;background:var(--pink);color:var(--white);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.card-info{padding:14px 4px 0;display:flex;flex-direction:column;gap:4px;flex:1}
+.card-info h3{font-size:1.5rem;margin:0}
+.card-info p{margin:0;font-size:.95rem;color:var(--muted)}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:12px}
+.price{font-family:var(--font-title);color:var(--green);font-size:1.45rem}
+.add-btn{background:var(--pink);color:var(--white);border:0;border-radius:999px;padding:11px 20px;font-weight:600;cursor:pointer;transition:background .3s}
+.add-btn:hover{background:var(--green)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--border);background:var(--white);border-radius:999px;overflow:hidden}
+.stepper button{width:40px;height:42px;border:0;background:none;color:var(--green);font-size:1.25rem;cursor:pointer;line-height:1}
+.stepper button:hover{background:var(--petal-soft)}
+.stepper output{min-width:28px;text-align:center;font-weight:700;color:var(--green)}
+.stepper.sm button{width:34px;height:36px;font-size:1.1rem}
+
+/* Tiroir panier */
+.overlay{position:fixed;inset:0;background:rgba(31,31,31,.35);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,100%);background:var(--cream);z-index:160;transform:translateX(100%);transition:transform .4s var(--ease);display:flex;flex-direction:column;box-shadow:-20px 0 50px -30px rgba(47,74,58,.6)}
+.drawer.open{transform:none}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid var(--border)}
+.drawer-head h2{font-size:2rem;margin:0}
+.close{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--white);color:var(--green);font-size:1.2rem;cursor:pointer}
+.drawer-body{flex:1;overflow:auto;padding:8px 24px}
+.drawer-foot{padding:20px 24px 24px;border-top:1px solid var(--border);background:var(--white)}
+.line{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--border)}
+.line-img{width:72px;height:88px;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--petal),var(--cream))}
+.line-img img{width:100%;height:100%;object-fit:cover}
+.line-img .placeholder{font-size:.8rem;padding:4px}
+.line h4{font-size:1.15rem;margin:0 0 6px}
+.line .remove{background:none;border:0;color:var(--muted);font-size:.82rem;text-decoration:underline;cursor:pointer;padding:0;margin-left:10px}
+.line .remove:hover{color:var(--pink)}
+.line-price{font-weight:600;color:var(--green);text-align:right}
+.totals{display:grid;gap:6px;margin-bottom:16px;font-size:.95rem}
+.totals div{display:flex;justify-content:space-between}
+.totals .total{font-family:var(--font-title);font-size:1.5rem;color:var(--green);padding-top:6px;border-top:1px solid var(--border);margin-top:4px}
+.free-ship{background:var(--petal-soft);border-radius:14px;padding:10px 14px;font-size:.88rem;color:var(--green);margin:14px 0 4px}
+.bar{height:6px;border-radius:6px;background:var(--white);margin-top:8px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--pink);border-radius:6px;transition:width .4s var(--ease)}
+.empty{text-align:center;padding:50px 10px}
+.empty .placeholder{height:auto;font-size:1.8rem;margin-bottom:10px}
+
+/* Formulaires */
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:30px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label,.legend{font-weight:600;font-size:.92rem;color:var(--green)}
+.field input,.field select,.field textarea{border:1px solid rgba(47,74,58,.3);border-radius:14px;padding:13px 15px;background:var(--cream);font-size:1rem;width:100%}
+.field textarea{resize:vertical;min-height:110px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--pink);outline-offset:1px;border-color:transparent}
+.field .hint{font-size:.82rem;color:var(--muted)}
+.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:#B3261E;background:#FFF5F4}
+.field .err{display:none;color:#B3261E;font-size:.85rem;font-weight:500}
+.field.invalid .err{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.option{position:relative;border:1.5px solid var(--border);border-radius:18px;padding:16px 18px;cursor:pointer;background:var(--cream);display:block}
+.option input{position:absolute;opacity:0}
+.option strong{display:block;color:var(--green)}
+.option small{color:var(--muted)}
+.option:has(input:checked){border-color:var(--green);background:var(--white);box-shadow:inset 0 0 0 1px var(--green)}
+.option:has(input:focus-visible){outline:2px solid var(--pink);outline-offset:2px}
+.check{display:flex;gap:10px;align-items:center;font-size:.95rem;margin-bottom:14px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--green)}
+.note{background:var(--petal-soft);border-radius:14px;padding:12px 16px;font-size:.9rem;color:var(--green);margin-bottom:16px}
+.alert{background:#FFF5F4;border:1px solid #E7B1AC;color:#8C1D18;border-radius:14px;padding:12px 16px;font-size:.92rem;margin-bottom:16px}
+
+/* Connexion */
+.auth{display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:1100px;margin:10px auto 0;border-radius:var(--radius-xl);overflow:hidden;background:var(--white);border:1px solid var(--border)}
+.auth-side{position:relative;background:var(--green);color:var(--cream);padding:60px 50px;display:flex;flex-direction:column;justify-content:flex-end;min-height:560px;isolation:isolate}
+.auth-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.auth-side::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(47,74,58,.15),rgba(47,74,58,.85))}
+.auth-side h2{color:var(--cream);font-size:clamp(2rem,3.4vw,3rem)}
+.auth-side h2 em{color:var(--petal)}
+.auth-side ul{padding:0;margin:0;list-style:none;display:grid;gap:8px}
+.auth-side li::before{content:'✳ ';color:var(--petal)}
+.auth-main{padding:46px 50px}
+.tabs{display:flex;gap:6px;padding:6px;background:var(--cream);border:1px solid var(--border);border-radius:999px;margin-bottom:26px}
+.tabs button{flex:1;border:0;background:none;padding:10px 14px;border-radius:999px;font-weight:600;color:var(--green);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--green);color:var(--cream)}
+.sep{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:.88rem;margin:22px 0}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Commande */
+.steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:30px 0 34px;padding:0;list-style:none}
+.steps li{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;color:var(--muted)}
+.steps li span{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem}
+.steps li.done{color:var(--green)}
+.steps li.done span{background:var(--green);border-color:var(--green);color:var(--cream)}
+.steps li.current{color:var(--green)}
+.steps li.current span{border-color:var(--pink);color:var(--pink)}
+.steps li+li::before{content:'';width:28px;height:1px;background:var(--border);margin-right:6px}
+.checkout{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:start;padding-bottom:40px}
+.checkout h3{font-size:1.7rem;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.checkout h3 .num{width:34px;height:34px;border-radius:50%;background:var(--green);color:var(--cream);font-family:var(--font-body);font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.checkout .panel+.panel{margin-top:20px}
+.summary{position:sticky;top:110px}
+.summary .line{grid-template-columns:56px 1fr auto}
+.summary .line-img{width:56px;height:68px}
+.who{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.95rem}
+.card-preview{background:var(--cream);border:1px dashed rgba(47,74,58,.35);border-radius:14px;padding:16px 18px;font-family:var(--font-title);font-style:italic;color:var(--green);font-size:1.2rem;min-height:70px;white-space:pre-wrap}
+
+/* Confirmation */
+.confirm{max-width:760px;margin:10px auto 60px;text-align:center}
+.confirm .seal{width:96px;height:96px;margin:30px auto 20px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+.confirm .panel{text-align:left;margin-top:30px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;font-size:.95rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:500}
+
+/* Profil */
+.profile{display:grid;grid-template-columns:260px 1fr;gap:28px;padding:40px 0 60px;align-items:start}
+.side-nav{display:grid;gap:4px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
+.side-nav button{text-align:left;border:0;background:none;padding:12px 16px;border-radius:14px;font-weight:500;color:var(--green);cursor:pointer}
+.side-nav button:hover{background:var(--petal-soft)}
+.side-nav button[aria-current="true"]{background:var(--green);color:var(--cream)}
+.side-nav .logout{color:var(--muted);border-top:1px solid var(--border);border-radius:0 0 14px 14px;margin-top:6px}
+.hello{display:flex;align-items:center;gap:16px;margin-bottom:6px}
+.hello .avatar{width:60px;height:60px;font-size:1.4rem}
+.order{border:1px solid var(--border);border-radius:18px;padding:18px 20px;background:var(--cream)}
+.order+.order{margin-top:14px}
+.order-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.order-top strong{font-family:var(--font-title);font-size:1.3rem;color:var(--green);font-weight:400}
+.status{font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:999px;background:var(--petal-soft);color:var(--green)}
+.status.prep{background:#FFF1D6;color:#7A4B00}
+.order details summary{cursor:pointer;font-weight:600;color:var(--green);font-size:.92rem;margin-top:8px}
+.order ul{margin:8px 0 0;padding-left:18px;font-size:.92rem}
+
+/* Atelier */
+.story{display:grid;grid-template-columns:1.1fr .9fr;margin:10px var(--gutter) 0;border-radius:var(--radius-xl);overflow:hidden;background:var(--petal-soft)}
+.story-img{min-height:560px;background:linear-gradient(160deg,var(--pink),var(--petal))}
+.story-img img{width:100%;height:100%;object-fit:cover;min-height:560px}
+.story-txt{padding:64px 8%;align-self:center}
+.story-txt h1{font-size:clamp(2.6rem,5vw,4.6rem);margin-bottom:22px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:60px 0}
+.trio .panel h3{font-size:1.5rem;margin-bottom:8px}
+.trio .ico{font-size:1.6rem;color:var(--pink);margin-bottom:10px;display:block}
+.visit{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:60px}
+.visit table{width:100%;border-collapse:collapse;font-size:.98rem}
+.visit td{padding:8px 0;border-bottom:1px solid var(--border)}
+.visit td:last-child{text-align:right;font-weight:600;color:var(--green)}
+.map{border-radius:var(--radius);background:repeating-linear-gradient(45deg,var(--petal-soft) 0 14px,var(--cream) 14px 28px);display:flex;align-items:center;justify-content:center;min-height:260px;border:1px solid var(--border);text-align:center;padding:20px}
+.map b{display:block;font-family:var(--font-title);font-weight:400;font-size:1.6rem;color:var(--green)}
+
+/* Rail accueil */
+.section{padding:90px 0 0}
+.section-head{text-align:center;margin-bottom:40px}
+.section-head h2{margin:0}
+
+/* Pied de page */
+.site-footer{background:var(--green);color:var(--cream);margin:80px var(--gutter) var(--gutter);border-radius:var(--radius-xl);padding:60px 6% 26px}
+.footer-main{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:30px}
+.site-footer h2{color:var(--cream);font-size:2.2rem;margin-bottom:8px}
+.site-footer h3{color:var(--petal);font-family:var(--font-body);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.site-footer a,.site-footer p{display:block;margin:0 0 8px;opacity:.92;font-size:.95rem}
+.site-footer a:hover{color:var(--petal)}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid rgba(251,246,239,.2);margin-top:40px;padding-top:18px;font-size:.85rem;opacity:.85}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--green);color:var(--cream);padding:12px 22px;border-radius:999px;font-weight:600;font-size:.92rem;z-index:200;opacity:0;transition:opacity .3s,transform .3s var(--ease);pointer-events:none;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Responsive */
+@media (max-width:1000px){
+  .header-inner{grid-template-columns:auto 1fr}
+  .menu-toggle{display:block}
+  .nav{position:absolute;top:100%;left:16px;right:16px;flex-direction:column;border-radius:22px;padding:10px;display:none;box-shadow:var(--shadow)}
+  .menu-open .nav{display:flex}
+  .nav a{padding:14px 18px}
+  .site-logo{width:160px}
+  .checkout,.profile{grid-template-columns:1fr}
+  .summary{position:static}
+  .auth{grid-template-columns:1fr;margin:10px var(--gutter) 0}
+  .auth-side{min-height:260px;padding:40px 30px}
+  .story,.visit{grid-template-columns:1fr}
+  .story-img,.story-img img{min-height:320px}
+  .trio{grid-template-columns:1fr}
+  .footer-main{grid-template-columns:1fr 1fr}
+}
+@media (max-width:620px){
+  :root{--gutter:16px}
+  body{font-size:16.5px}
+  .site-header{padding:8px 16px}
+  .site-logo{width:130px}
+  .account-btn .label,.cart-btn .label{display:none}
+  .account-btn{padding:10px}
+  .cart-btn{padding:11px 15px}
+  .row2,.row3,.options{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr;gap:22px 12px}
+  .card-info h3{font-size:1.2rem}
+  .card-foot{flex-direction:column;align-items:stretch}
+  .add-btn{width:100%}
+  .stepper{justify-content:space-between}
+  .panel{padding:22px 18px}
+  .auth-main{padding:30px 20px}
+  .page-head{padding:46px 20px 40px}
+  .footer-main{grid-template-columns:1fr}
+  .steps li+li::before{width:10px}
+  .steps li .txt{display:none}
+  .steps li.current .txt{display:inline}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="mock-bar" role="note">
+  <span>🌸 Maquette du parcours client — rien n'est vraiment envoyé ni payé.</span>
+  <button type="button" id="reset">Recommencer à zéro</button>
+</div>
+
+<header class="site-header" id="header">
+  <div class="header-inner">
+    <a href="#/" aria-label="Atelier Pivoine — accueil"><img class="site-logo" src="../../theme/atelier-pivoine/images/logo.svg" alt="Atelier Pivoine — Fleuriste Paris 11e"></a>
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      <a href="#/" data-nav="accueil">Accueil</a>
+      <a href="#/boutique" data-nav="boutique">Nos bouquets</a>
+      <a href="#/atelier" data-nav="atelier">L'atelier</a>
+    </nav>
+    <div class="header-actions">
+      <a class="account-btn" id="account-btn" href="#/connexion"></a>
+      <button class="cart-btn" id="cart-btn" type="button" aria-controls="drawer">
+        <span class="label">Panier</span><span aria-hidden="true">🛒</span>
+        <span class="cart-count is-empty" id="cart-count" aria-live="polite">0</span>
+      </button>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="nav"><span></span><span></span><b class="sr">Menu</b></button>
+    </div>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="footer-main">
+    <div><h2>Atelier Pivoine</h2><p>Cueilli à l'aube, offert le jour même.</p></div>
+    <div><h3>La boutique</h3><a href="#/boutique">Nos bouquets</a><a href="#/atelier">L'atelier</a><a href="#/profil">Mon compte</a></div>
+    <div><h3>Informations</h3><p>Livraison à Paris</p><p>Offerte dès 60 €</p><p>Retrait gratuit à l'atelier</p></div>
+    <div><h3>Contact</h3><p>27 rue Imaginaire<br>75011 Paris</p><p>01 23 45 67 89</p><p>bonjour@atelier-pivoine.test</p></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 Atelier Pivoine — commerce fictif.</p><a href="#app">Retour en haut ↑</a></div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+  <div class="drawer-head"><h2 id="drawer-title">Mon panier</h2><button class="close" type="button" id="drawer-close" aria-label="Fermer le panier">✕</button></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Données ---------- */
+const IMG = '../../theme/atelier-pivoine/images/home/';
+const PRODUCTS = [
+  {id:'camille',   name:"Le bouquet de Camille", desc:"Roses roses et blanches, le classique de l'atelier", price:62, img:'hero.jpg', badge:'Coup de cœur'},
+  {id:'ete',       name:"Jardin d'été",          desc:"Dahlias, cosmos et graminées folles",               price:45, img:'ete.jpg'},
+  {id:'automne',   name:"Douceur d'automne",     desc:"Roses cuivrées, chrysanthèmes et eucalyptus",       price:49, img:'automne.jpg'},
+  {id:'hiver',     name:"Neige de décembre",     desc:"Amaryllis blanches, sapin et baies rouges",         price:55, img:'hiver.jpg', badge:'Nouveau'},
+  {id:'printemps', name:"Éveil de printemps",    desc:"Renoncules, tulipes et mimosa",                     price:39, img:'printemps.jpg'},
+  {id:'mot',       name:"Petit mot",             desc:"Un mini-bouquet du jour, à glisser partout",        price:25},
+  {id:'champetre', name:"Champêtre",             desc:"Fleurs des champs nouées au raphia",                price:35},
+  {id:'grand',     name:"Grand jour",            desc:"Une généreuse brassée pour les grandes occasions",  price:89},
+];
+const byId = id => PRODUCTS.find(p => p.id === id);
+const SHIP = 8.9, FREE_FROM = 60;
+const euro = n => n.toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const imgTag = (p, cls='') => p.img
+  ? `<img src="${IMG}${p.img}" alt="${esc(p.name)}" loading="lazy" class="${cls}">`
+  : `<div class="placeholder">${esc(p.name)}</div>`;
+
+/* ---------- État (gardé dans le navigateur) ---------- */
+const KEY = 'atelier-pivoine-maquette';
+const blank = () => ({cart:{}, user:null, accounts:{}, orders:[], guestEmail:null});
+let S = blank();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); } catch(e) {}
+if (S.user) S.user = S.accounts[S.user.email] || S.user; // même objet que le compte
+const save = () => {
+  if (S.user) S.accounts[S.user.email] = S.user;
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {}
+};
+
+let filter = 'tous', sort = 'pertinence', profileTab = 'commandes', authTab = 'connexion';
+
+/* ---------- Panier ---------- */
+const cartLines = () => Object.entries(S.cart).filter(([,q]) => q > 0).map(([id,q]) => ({p:byId(id), q})).filter(l => l.p);
+const cartQty = () => cartLines().reduce((a,l) => a + l.q, 0);
+const subtotal = () => cartLines().reduce((a,l) => a + l.q * l.p.price, 0);
+const shipping = mode => mode === 'retrait' ? 0 : (subtotal() >= FREE_FROM ? 0 : SHIP);
+
+function setQty(id, q, {open=false, silent=false} = {}){
+  const before = S.cart[id] || 0;
+  q = Math.max(0, Math.min(20, q));
+  // On retient le bouton qui avait le focus pour le retrouver après le rafraîchissement
+  const a = document.activeElement, inDrawer = !!(a && a.closest && a.closest('#drawer'));
+  const kind = a && a.dataset ? ['inc','dec','add'].find(k => a.dataset[k] === id) : null;
+  if (q === 0) delete S.cart[id]; else S.cart[id] = q;
+  save(); refreshCart();
+  if (!silent && q > before) {
+    const b = document.getElementById('cart-btn'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump');
+    toast(`« ${byId(id).name} » ajouté au panier`);
+  }
+  if (open) openDrawer();
+  if (current === 'boutique' || current === 'accueil') updateCardControls(id);
+  if (current === 'commande') render();
+  if (kind && !open) {
+    const scope = inDrawer ? document.getElementById('drawer') : document.getElementById('app');
+    const target = q === 0 ? `[data-add="${id}"]` : `[data-${kind === 'add' ? 'inc' : kind}="${id}"]`;
+    const el = scope.querySelector(target); if (el) el.focus();
+  }
+}
+
+function controlsFor(p){
+  const q = S.cart[p.id] || 0;
+  if (!q) return `<button class="add-btn" type="button" data-add="${p.id}">Ajouter</button>`;
+  return stepper(p.id, q);
+}
+function stepper(id, q, sm=''){
+  const name = esc(byId(id).name);
+  return `<div class="stepper ${sm}" role="group" aria-label="Quantité de ${name}">
+    <button type="button" data-dec="${id}" aria-label="Retirer un ${name}">−</button>
+    <output aria-live="polite">${q}</output>
+    <button type="button" data-inc="${id}" aria-label="Ajouter un ${name}">+</button></div>`;
+}
+function updateCardControls(id){
+  document.querySelectorAll(`[data-ctrl="${id}"]`).forEach(el => { el.innerHTML = controlsFor(byId(id)); });
+}
+
+function refreshCart(){
+  const n = cartQty();
+  const c = document.getElementById('cart-count');
+  c.textContent = n; c.classList.toggle('is-empty', !n);
+  document.getElementById('cart-btn').setAttribute('aria-label', `Panier, ${n} article${n>1?'s':''}`);
+  const body = document.getElementById('drawer-body'), foot = document.getElementById('drawer-foot');
+  const lines = cartLines();
+  if (!lines.length){
+    body.innerHTML = `<div class="empty"><div class="placeholder">Votre panier est vide</div><p class="muted">Les bouquets du jour n'attendent que vous.</p></div>`;
+    foot.innerHTML = `<a class="btn btn-secondary btn-block" href="#/boutique" data-close>Voir les bouquets</a>`;
+    return;
+  }
+  body.innerHTML = lines.map(({p,q}) => `
+    <div class="line">
+      <div class="line-img">${imgTag(p)}</div>
+      <div><h4>${esc(p.name)}</h4>${stepper(p.id,q,'sm')}<button class="remove" type="button" data-remove="${p.id}">Retirer</button></div>
+      <div class="line-price">${euro(p.price*q)}</div>
+    </div>`).join('');
+  const st = subtotal(), left = FREE_FROM - st;
+  foot.innerHTML = `
+    <div class="free-ship">${left > 0 ? `Plus que <strong>${euro(left)}</strong> pour la livraison offerte à Paris` : `🎉 La livraison à Paris vous est offerte`}
+      <div class="bar"><span style="width:${Math.min(100, st/FREE_FROM*100)}%"></span></div></div>
+    <div class="totals" style="margin-top:14px">
+      <div><span>Sous-total</span><span>${euro(st)}</span></div>
+      <div class="muted"><span>Livraison</span><span>${left > 0 ? `${euro(SHIP)} (ou retrait gratuit)` : 'Offerte'}</span></div>
+    </div>
+    <button class="btn btn-primary btn-block" type="button" data-checkout>Commander</button>
+    <p style="text-align:center;margin:12px 0 0"><button class="link" type="button" data-close>Continuer mes achats</button></p>`;
+}
+
+/* ---------- Tiroir ---------- */
+const drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
+let lastFocus = null;
+function openDrawer(){
+  lastFocus = document.activeElement;
+  drawer.classList.add('open'); overlay.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+  setTimeout(() => document.getElementById('drawer-close').focus(), 50);
+}
+function closeDrawer(){
+  drawer.classList.remove('open'); overlay.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+  if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus();
+}
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- Pages ---------- */
+const initials = u => ((u.prenom||'?')[0] + ((u.nom||'')[0]||'')).toUpperCase();
+
+function card(p){
+  return `<article class="card">
+    <div class="card-img">${imgTag(p)}${p.badge ? `<span class="badge">${esc(p.badge)}</span>` : ''}</div>
+    <div class="card-info">
+      <h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p>
+      <div class="card-foot"><span class="price">${euro(p.price)}</span><div data-ctrl="${p.id}">${controlsFor(p)}</div></div>
+    </div></article>`;
+}
+
+const pages = {
+  accueil(){
+    const picks = ['camille','ete','hiver','mot'].map(byId);
+    return `
+    <section class="hero">
+      <div class="hero-bg"><img src="${IMG}hero.jpg" alt=""></div>
+      <div class="hero-content">
+        <p class="eyebrow">Fleuriste · Paris 11e</p>
+        <h1>Un bouquet.<br><em>Une émotion.</em></h1>
+        <p class="lead">Des fleurs de saison, choisies avec délicatesse et assemblées à la main pour faire fleurir vos moments précieux.</p>
+        <div class="hero-buttons"><a class="btn btn-primary" href="#/boutique">Découvrir les bouquets</a><a class="btn btn-glass" href="#/atelier">L'atelier ↗</a></div>
+      </div>
+    </section>
+    <div class="reassurance"><div><span>✳</span>Fleurs de saison</div><div><span>♡</span>Compositions artisanales</div><div><span>⌁</span>Livraison à Paris</div></div>
+    <section class="section wrap">
+      <div class="section-head"><p class="eyebrow">Les coups de cœur de l'atelier</p><h2>Nos bouquets <em>du moment.</em></h2></div>
+      <div class="grid">${picks.map(card).join('')}</div>
+      <p style="text-align:center;margin-top:34px"><a class="link" href="#/boutique">Voir toute la boutique ↗</a></p>
+    </section>`;
+  },
+
+  boutique(){
+    let list = PRODUCTS.slice();
+    if (filter === 'moins40') list = list.filter(p => p.price < 40);
+    if (filter === '40a60') list = list.filter(p => p.price >= 40 && p.price <= 60);
+    if (filter === 'plus60') list = list.filter(p => p.price > 60);
+    if (sort === 'prix-asc') list.sort((a,b) => a.price - b.price);
+    if (sort === 'prix-desc') list.sort((a,b) => b.price - a.price);
+    const chip = (v,l) => `<button class="chip" type="button" data-filter="${v}" aria-pressed="${filter===v}">${l}</button>`;
+    return `
+    <section class="page-head">
+      <p class="crumbs"><a href="#/">Accueil</a> › Nos bouquets</p>
+      <p class="eyebrow">Rayon</p>
+      <h1>Bouquets <em>de saison</em></h1>
+      <p>Composés chaque matin avec les fleurs arrivées à l'aube. Livrés à Paris le jour même pour toute commande passée avant 14 h.</p>
+    </section>
+    <div class="wrap">
+      <div class="shop-tools">
+        <div class="chips" role="group" aria-label="Filtrer par prix">${chip('tous','Tous')}${chip('moins40','Moins de 40 €')}${chip('40a60','40 à 60 €')}${chip('plus60','Plus de 60 €')}</div>
+        <label class="sort">Trier
+          <select id="sort">
+            <option value="pertinence" ${sort==='pertinence'?'selected':''}>Sélection de l'atelier</option>
+            <option value="prix-asc" ${sort==='prix-asc'?'selected':''}>Prix croissant</option>
+            <option value="prix-desc" ${sort==='prix-desc'?'selected':''}>Prix décroissant</option>
+          </select></label>
+      </div>
+      <p class="muted" style="font-size:.9rem">${list.length} bouquet${list.length>1?'s':''}</p>
+      <div class="grid">${list.map(card).join('')}</div>
+    </div>`;
+  },
+
+  connexion(params){
+    const fromCheckout = params.get('suite') === 'commande';
+    if (S.user) { location.hash = fromCheckout ? '#/commande' : '#/profil'; return ''; }
+    const login = authTab === 'connexion';
+    return `
+    <div class="wrap" style="padding-top:10px">
+    <section class="auth">
+      <div class="auth-side">
+        <img src="${IMG}printemps.jpg" alt="">
+        <p class="eyebrow" style="color:var(--petal)">Mon compte</p>
+        <h2>${fromCheckout ? 'Presque <em>fini.</em>' : 'Bienvenue <em>à l\'atelier.</em>'}</h2>
+        <ul><li>Suivre vos commandes</li><li>Retrouver vos adresses de livraison</li><li>Commander à nouveau en deux clics</li></ul>
+      </div>
+      <div class="auth-main">
+        ${fromCheckout ? `<div class="note">Connectez-vous pour finaliser votre commande, ou continuez sans compte.</div>` : ''}
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" aria-selected="${login}" data-authtab="connexion">Se connecter</button>
+          <button type="button" role="tab" aria-selected="${!login}" data-authtab="inscription">Créer un compte</button>
+        </div>
+        <form id="auth-form" novalidate data-mode="${authTab}" data-next="${fromCheckout ? 'commande' : 'profil'}">
+          <div id="auth-alert"></div>
+          ${login ? '' : `<div class="row2">
+            ${field('prenom','Prénom','text','given-name')}${field('nom','Nom','text','family-name')}</div>`}
+          ${field('email','Adresse e-mail','email','email', S.guestEmail || '')}
+          ${field('mdp','Mot de passe','password', login ? 'current-password' : 'new-password','', login ? '' : '8 caractères minimum')}
+          ${login ? `<p style="margin:-6px 0 18px;text-align:right"><button class="link" type="button" id="forgot" style="font-size:.88rem">Mot de passe oublié ?</button></p>` : ''}
+          <button class="btn btn-primary btn-block" type="submit">${login ? 'Se connecter' : 'Créer mon compte'}</button>
+        </form>
+        ${login ? `<p class="muted" style="font-size:.82rem;margin:12px 0 0">Maquette : n'importe quel e-mail et mot de passe fonctionnent.</p>` : ''}
+        ${fromCheckout ? `<div class="sep">ou</div><a class="btn btn-ghost btn-block" href="#/commande?invite=1">Commander sans compte</a>` : ''}
+      </div>
+    </section></div>`;
+  },
+
+  commande(params){
+    const lines = cartLines();
+    if (!lines.length) return `<div class="wrap"><div class="empty" style="padding:90px 0"><div class="placeholder">Votre panier est vide</div><p><a class="btn btn-secondary" href="#/boutique">Voir les bouquets</a></p></div></div>`;
+    const guest = !S.user;
+    if (guest && params.get('invite') !== '1') { location.hash = '#/connexion?suite=commande'; return ''; }
+    const d = draft, u = S.user || {};
+    const today = new Date(); const iso = x => x.toISOString().slice(0,10);
+    const minDate = iso(new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12));
+    const mode = d.mode || 'livraison';
+    const sh = shipping(mode), tot = subtotal() + sh;
+    return `
+    <div class="wrap">
+      <ol class="steps" aria-label="Étapes">
+        <li class="done"><span>✓</span><b class="txt">Panier</b></li>
+        <li class="done"><span>✓</span><b class="txt">${guest ? 'Sans compte' : 'Connexion'}</b></li>
+        <li class="current" aria-current="step"><span>3</span><b class="txt">Livraison & paiement</b></li>
+        <li><span>4</span><b class="txt">Confirmation</b></li>
+      </ol>
+      <form class="checkout" id="checkout" novalidate>
+        <div>
+          <div class="panel">
+            <h3><span class="num">1</span>Vous</h3>
+            ${guest ? `<div class="row2">${field('c-prenom','Prénom','text','given-name',d['c-prenom'])}${field('c-nom','Nom','text','family-name',d['c-nom'])}</div>
+              ${field('c-email','E-mail (pour le suivi)','email','email',d['c-email'])}
+              <p class="muted" style="font-size:.88rem;margin:0">Déjà client ? <a class="link" href="#/connexion?suite=commande">Se connecter</a></p>`
+            : `<div class="who"><span>Connecté·e en tant que <strong>${esc(u.prenom)} ${esc(u.nom)}</strong> · ${esc(u.email)}</span><button class="link" type="button" data-logout>Ce n'est pas moi</button></div>`}
+          </div>
+
+          <div class="panel">
+            <h3><span class="num">2</span>Livraison</h3>
+            <div class="options" role="radiogroup" aria-label="Mode de réception">
+              <label class="option"><input type="radio" name="mode" value="livraison" ${mode==='livraison'?'checked':''}><strong>Livraison à Paris</strong><small>${subtotal() >= FREE_FROM ? 'Offerte' : euro(SHIP) + ' · offerte dès 60 €'}</small></label>
+              <label class="option"><input type="radio" name="mode" value="retrait" ${mode==='retrait'?'checked':''}><strong>Retrait à l'atelier</strong><small>Gratuit · 27 rue Imaginaire</small></label>
+            </div>
+            ${mode === 'livraison' ? `
+              ${field('dest','Nom du destinataire','text','name', d.dest ?? (u.prenom ? u.prenom + ' ' + u.nom : ''), 'Vous ou la personne à qui vous offrez les fleurs')}
+              ${field('adresse','Adresse','text','street-address', d.adresse ?? (S.user && S.user.adresse) ?? '')}
+              <div class="row3">${field('complement','Étage, code…','text','address-line2', d.complement ?? '', '', false)}${field('cp','Code postal','text','postal-code', d.cp ?? (S.user && S.user.cp) ?? '', '', true, 'inputmode="numeric" maxlength="5"')}${field('ville','Ville','text','address-level2','Paris','',true,'readonly')}</div>
+              ${field('tel','Téléphone du destinataire','tel','tel', d.tel ?? '', 'Le livreur appelle s\'il ne trouve personne')}` : ''}
+            <div class="row2">
+              ${field('date', mode==='retrait' ? 'Date de retrait' : 'Date de livraison','date','', d.date || minDate, '', true, `min="${minDate}"`)}
+              <div class="field"><label for="creneau">Créneau</label>
+                <select id="creneau" name="creneau">
+                  <option ${d.creneau==='Matin · 9 h – 13 h'?'selected':''}>Matin · 9 h – 13 h</option>
+                  <option ${d.creneau==='Après-midi · 14 h – 19 h'?'selected':''}>Après-midi · 14 h – 19 h</option>
+                </select></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3><span class="num">3</span>Un petit mot ?</h3>
+            <label class="check"><input type="checkbox" id="nocard" ${d.nocard?'checked':''}> Pas de carte, merci</label>
+            ${d.nocard ? '' : `
+            <div class="field"><label for="message">Message écrit à la main par Camille</label>
+              <textarea id="message" name="message" maxlength="200" placeholder="Joyeux anniversaire ! Avec tout mon amour…">${esc(d.message||'')}</textarea>
+              <span class="hint"><span id="count">${(d.message||'').length}</span> / 200 caractères</span></div>
+            <p class="legend" style="margin-bottom:6px">Aperçu de la carte</p>
+            <div class="card-preview" id="preview">${esc(d.message||'') || '<span class="muted">Votre message apparaîtra ici.</span>'}</div>`}
+          </div>
+
+          <div class="panel">
+            <h3><span class="num">4</span>Paiement</h3>
+            <div class="note">Maquette : aucun paiement réel. Tapez n'importe quels chiffres.</div>
+            ${field('carte','Numéro de carte','text','cc-number', d.carte ?? '', '', true, 'inputmode="numeric" placeholder="1234 5678 9012 3456"')}
+            <div class="row2">${field('exp','Expiration','text','cc-exp', d.exp ?? '', '', true, 'placeholder="MM/AA"')}${field('cvc','Code (CVC)','text','cc-csc', d.cvc ?? '', '', true, 'inputmode="numeric" maxlength="4" placeholder="123"')}</div>
+          </div>
+        </div>
+
+        <aside class="panel summary" aria-label="Récapitulatif">
+          <h3 style="font-size:1.6rem">Récapitulatif</h3>
+          ${lines.map(({p,q}) => `<div class="line"><div class="line-img">${imgTag(p)}</div><div><h4 style="font-size:1.05rem">${esc(p.name)}</h4>${stepper(p.id,q,'sm')}</div><div class="line-price">${euro(p.price*q)}</div></div>`).join('')}
+          <div class="totals" style="margin-top:16px">
+            <div><span>Sous-total</span><span>${euro(subtotal())}</span></div>
+            <div><span>${mode==='retrait'?'Retrait à l\'atelier':'Livraison'}</span><span>${sh ? euro(sh) : 'Offerte'}</span></div>
+            <div class="total"><span>Total</span><span>${euro(tot)}</span></div>
+          </div>
+          <div id="checkout-alert"></div>
+          <button class="btn btn-primary btn-block" type="submit">Payer ${euro(tot)}</button>
+          <p class="muted" style="font-size:.82rem;text-align:center;margin:12px 0 0">🔒 Paiement sécurisé · Fleurs fraîches garanties</p>
+        </aside>
+      </form>
+    </div>`;
+  },
+
+  confirmation(params){
+    const o = S.orders.find(x => x.id === params.get('n'));
+    if (!o) { location.hash = '#/'; return ''; }
+    const guest = !S.user;
+    return `
+    <div class="wrap"><section class="confirm">
+      <div class="seal" aria-hidden="true">✿</div>
+      <p class="eyebrow">Commande ${esc(o.id)}</p>
+      <h1 style="font-size:clamp(2.4rem,6vw,4.4rem)">Merci ${esc(o.prenom)}, <em>c'est noté.</em></h1>
+      <p>Camille prépare votre bouquet. Un e-mail de confirmation part à <strong>${esc(o.email)}</strong>.</p>
+      <div class="panel">
+        <dl class="kv">
+          <dt>${o.mode==='retrait'?'Retrait':'Livraison'}</dt><dd>${fmtDate(o.date)} · ${esc(o.creneau)}</dd>
+          ${o.mode==='livraison' ? `<dt>Adresse</dt><dd>${esc(o.dest)}, ${esc(o.adresse)}, ${esc(o.cp)} Paris</dd>` : `<dt>Où</dt><dd>27 rue Imaginaire, 75011 Paris</dd>`}
+          <dt>Bouquets</dt><dd>${o.items.map(i => `${i.q} × ${esc(i.name)}`).join(', ')}</dd>
+          <dt>Carte</dt><dd>${o.message ? `« ${esc(o.message)} »` : 'Sans carte'}</dd>
+          <dt>Total payé</dt><dd><strong>${euro(o.total)}</strong></dd>
+        </dl>
+      </div>
+      <div class="hero-buttons" style="margin-top:28px">
+        ${guest ? `<button class="btn btn-secondary" type="button" data-signup-after>Créer un compte pour suivre ma commande</button>` : `<a class="btn btn-secondary" href="#/profil">Suivre ma commande</a>`}
+        <a class="btn btn-ghost" href="#/boutique">Continuer mes achats</a>
+      </div>
+    </section></div>`;
+  },
+
+  profil(){
+    if (!S.user) { location.hash = '#/connexion'; return ''; }
+    const u = S.user, mine = S.orders.filter(o => o.email === u.email).slice().reverse();
+    const tab = (v,l) => `<button type="button" data-ptab="${v}" aria-current="${profileTab===v}">${l}</button>`;
+    let content = '';
+    if (profileTab === 'commandes') {
+      content = `<h2 style="font-size:2.2rem">Mes commandes</h2>` + (mine.length ? mine.map(o => `
+        <div class="order">
+          <div class="order-top"><strong>${esc(o.id)}</strong><span class="status prep">En préparation</span></div>
+          <div class="muted" style="font-size:.92rem">Passée le ${fmtDate(o.placed)} · ${o.mode==='retrait'?'Retrait':'Livraison'} le ${fmtDate(o.date)} · <strong style="color:var(--green)">${euro(o.total)}</strong></div>
+          <details><summary>Voir le détail</summary><ul>${o.items.map(i => `<li>${i.q} × ${esc(i.name)} — ${euro(i.q*i.price)}</li>`).join('')}</ul>
+            ${o.message ? `<p class="muted" style="margin:8px 0 0;font-size:.9rem">Carte : « ${esc(o.message)} »</p>` : ''}</details>
+          <p style="margin:12px 0 0"><button class="link" type="button" data-reorder="${esc(o.id)}">Commander à nouveau</button></p>
+        </div>`).join('') : `<div class="order"><p style="margin:0">Pas encore de commande. <a class="link" href="#/boutique">Découvrir les bouquets</a></p></div>`);
+    } else if (profileTab === 'infos') {
+      content = `<h2 style="font-size:2.2rem">Mes informations</h2>
+        <form id="infos-form" novalidate>
+          <div class="row2">${field('p-prenom','Prénom','text','given-name',u.prenom)}${field('p-nom','Nom','text','family-name',u.nom)}</div>
+          ${field('p-email','E-mail','email','email',u.email)}
+          ${field('p-tel','Téléphone','tel','tel',u.tel||'','',false)}
+          <label class="check"><input type="checkbox" ${u.news?'checked':''} id="p-news"> Recevoir la lettre des fleurs de saison (une par mois)</label>
+          <button class="btn btn-secondary" type="submit">Enregistrer</button>
+        </form>`;
+    } else {
+      content = `<h2 style="font-size:2.2rem">Mes adresses</h2>` + (u.adresse
+        ? `<div class="order"><div class="order-top"><strong>Adresse principale</strong><span class="status">Par défaut</span></div><p style="margin:0">${esc(u.dest||(u.prenom+' '+u.nom))}<br>${esc(u.adresse)}<br>${esc(u.cp)} Paris</p></div>`
+        : `<div class="order"><p style="margin:0">Aucune adresse enregistrée. Elle sera ajoutée automatiquement à votre prochaine livraison.</p></div>`);
+    }
+    return `
+    <section class="page-head" style="text-align:left;padding:40px 6%">
+      <div class="hello"><span class="avatar" aria-hidden="true">${esc(initials(u))}</span>
+        <div><p class="eyebrow" style="margin:0">Mon compte</p><h1 style="font-size:clamp(2.2rem,4.6vw,3.6rem);margin:0">Bonjour <em>${esc(u.prenom)}</em></h1></div></div>
+    </section>
+    <div class="wrap"><div class="profile">
+      <nav class="side-nav" aria-label="Mon compte">${tab('commandes','Mes commandes')}${tab('infos','Mes informations')}${tab('adresses','Mes adresses')}
+        <button type="button" class="logout" data-logout>Se déconnecter</button></nav>
+      <div class="panel">${content}</div>
+    </div></div>`;
+  },
+
+  atelier(){
+    return `
+    <section class="story">
+      <div class="story-img"><img src="${IMG}automne.jpg" alt="Bouquet d'automne composé à l'atelier"></div>
+      <div class="story-txt">
+        <p class="crumbs"><a href="#/">Accueil</a> › L'atelier</p>
+        <p class="eyebrow">Notre histoire</p>
+        <h1>Un carnet d'herbier <em>sur le comptoir.</em></h1>
+        <p>Une petite boutique du 11e, quelques rues après Oberkampf. Le rideau se lève à 9 h, les seaux sont déjà pleins : renoncules, eucalyptus, branches de saison arrivées à l'aube.</p>
+        <p>Camille Rose compose chaque bouquet à la main, sur un grand plan de travail en bois, et l'emballe dans un papier kraft noué d'un ruban.</p>
+        <a class="btn btn-primary" href="#/boutique" style="margin-top:10px">Voir les bouquets du jour</a>
+      </div>
+    </section>
+    <div class="wrap">
+      <div class="trio">
+        <div class="panel"><span class="ico">✳</span><h3>De saison</h3><p class="muted" style="margin:0">Nous travaillons les fleurs au rythme des saisons, sans fleurs qui ont fait le tour du monde.</p></div>
+        <div class="panel"><span class="ico">♡</span><h3>Artisanal</h3><p class="muted" style="margin:0">Chaque bouquet est unique, composé à la main au moment de votre commande.</p></div>
+        <div class="panel"><span class="ico">⌁</span><h3>Proche</h3><p class="muted" style="margin:0">Livraison à vélo dans Paris, le jour même pour une commande avant 14 h.</p></div>
+      </div>
+      <div class="visit">
+        <div class="panel">
+          <p class="eyebrow">Venir à l'atelier</p>
+          <h2 style="font-size:2.4rem">Horaires</h2>
+          <table><tbody>
+            <tr><td>Lundi</td><td>Fermé</td></tr>
+            <tr><td>Mardi – vendredi</td><td>9 h – 19 h 30</td></tr>
+            <tr><td>Samedi</td><td>9 h – 20 h</td></tr>
+            <tr><td>Dimanche</td><td>9 h – 13 h</td></tr>
+          </tbody></table>
+          <p style="margin:18px 0 0">27 rue Imaginaire, 75011 Paris<br>01 23 45 67 89 · bonjour@atelier-pivoine.test</p>
+        </div>
+        <div class="map"><div><b>Paris 11e</b><span class="muted">Métro Oberkampf · 4 min à pied</span></div></div>
+      </div>
+    </div>`;
+  },
+};
+
+function field(id, label, type, ac, value='', hint='', required=true, extra=''){
+  return `<div class="field"><label for="${id}">${label}${required ? '' : ' <span class="muted" style="font-weight:400">(facultatif)</span>'}</label>
+    <input id="${id}" name="${id}" type="${type}" ${ac ? `autocomplete="${ac}"` : ''} value="${esc(value)}" ${required ? 'required' : ''} ${extra} aria-describedby="${id}-err">
+    ${hint ? `<span class="hint">${hint}</span>` : ''}<span class="err" id="${id}-err">Ce champ est à remplir.</span></div>`;
+}
+function fmtDate(iso){ try { return new Date(iso + (iso.length===10?'T12:00':'')).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); } catch(e){ return iso; } }
+
+function validate(form){
+  let first = null;
+  form.querySelectorAll('input[required],textarea[required],select[required]').forEach(el => {
+    const f = el.closest('.field'); let ok = el.value.trim() !== '';
+    const err = f.querySelector('.err');
+    if (ok && el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value)) { ok = false; err.textContent = 'Cette adresse e-mail ne semble pas complète.'; }
+    else if (ok && el.id === 'cp' && !/^750(0[1-9]|1\d|20)$/.test(el.value)) { ok = false; err.textContent = 'Nous livrons dans Paris uniquement (75001 à 75020).'; }
+    else if (ok && el.id === 'mdp' && form.dataset.mode === 'inscription' && el.value.length < 8) { ok = false; err.textContent = 'Le mot de passe doit faire au moins 8 caractères.'; }
+    else err.textContent = 'Ce champ est à remplir.';
+    f.classList.toggle('invalid', !ok); el.setAttribute('aria-invalid', String(!ok));
+    if (!ok && !first) first = el;
+  });
+  if (first) first.focus();
+  return !first;
+}
+
+/* ---------- Brouillon de commande ---------- */
+let draft = {};
+function captureDraft(){
+  const f = document.getElementById('checkout'); if (!f) return;
+  f.querySelectorAll('input,textarea,select').forEach(el => {
+    if (el.type === 'radio') { if (el.checked) draft[el.name] = el.value; }
+    else if (el.type === 'checkbox') draft[el.id] = el.checked;
+    else if (el.id) draft[el.id] = el.value;
+  });
+}
+
+/* ---------- Routeur ---------- */
+let current = '';
+function render(){
+  if (current === 'commande') captureDraft();
+  const [path, qs] = (location.hash.replace(/^#\/?/, '') || '').split('?');
+  const name = pages[path] ? path : 'accueil';
+  const params = new URLSearchParams(qs || '');
+  const changed = name !== current;
+  current = name;
+  const html = pages[name](params);
+  if (html === '') return; // redirection en cours
+  const app = document.getElementById('app');
+  const y = window.scrollY;
+  app.innerHTML = html;
+  document.querySelectorAll('[data-nav]').forEach(a => a.toggleAttribute('aria-current', false));
+  const navKey = {accueil:'accueil', boutique:'boutique', atelier:'atelier'}[name];
+  if (navKey) document.querySelector(`[data-nav="${navKey}"]`).setAttribute('aria-current','page');
+  const titles = {accueil:'Accueil', boutique:'Bouquets de saison', atelier:"L'atelier", connexion:'Connexion', commande:'Commande', confirmation:'Merci', profil:'Mon compte'};
+  document.title = `${titles[name]} — Atelier Pivoine (maquette)`;
+  if (changed) { window.scrollTo(0,0); app.focus({preventScroll:true}); } else window.scrollTo(0,y);
+  refreshAccount();
+  document.body.classList.remove('menu-open');
+  document.getElementById('menu-toggle').setAttribute('aria-expanded','false');
+}
+function refreshAccount(){
+  const b = document.getElementById('account-btn');
+  if (S.user) { b.href = '#/profil'; b.innerHTML = `<span class="avatar" aria-hidden="true">${esc(initials(S.user))}</span><span class="label">${esc(S.user.prenom)}</span>`; b.setAttribute('aria-label','Mon compte'); }
+  else { b.href = '#/connexion'; b.innerHTML = `<span aria-hidden="true">👤</span><span class="label">Se connecter</span>`; b.setAttribute('aria-label','Se connecter'); }
+}
+
+/* ---------- Évènements ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button,a'); if (!t) return;
+  const d = t.dataset;
+  if (d.add)    { setQty(d.add, 1, {open:true}); return; }
+  if (d.inc)    { setQty(d.inc, (S.cart[d.inc]||0) + 1); return; }
+  if (d.dec)    { setQty(d.dec, (S.cart[d.dec]||0) - 1, {silent:true}); return; }
+  if (d.remove) { setQty(d.remove, 0, {silent:true}); return; }
+  if (d.filter) { filter = d.filter; render(); return; }
+  if (d.ptab)   { profileTab = d.ptab; render(); return; }
+  if (d.authtab){ authTab = d.authtab; render(); return; }
+  if ('close' in d) { closeDrawer(); return; }
+  if ('checkout' in d) { closeDrawer(); location.hash = S.user ? '#/commande' : '#/connexion?suite=commande'; return; }
+  if ('logout' in d) { S.user = null; save(); toast('Vous êtes déconnecté·e'); location.hash = current === 'commande' ? '#/connexion?suite=commande' : '#/'; render(); return; }
+  if ('signupAfter' in d) { authTab = 'inscription'; location.hash = '#/connexion'; return; }
+  if (d.reorder) {
+    const o = S.orders.find(x => x.id === d.reorder);
+    o.items.forEach(i => { if (byId(i.id)) S.cart[i.id] = (S.cart[i.id]||0) + i.q; });
+    save(); refreshCart(); openDrawer(); return;
+  }
+  if (t.id === 'forgot') { document.getElementById('auth-alert').innerHTML = `<div class="note">Si un compte existe, un lien pour changer le mot de passe a été envoyé (maquette).</div>`; return; }
+  if (t.id === 'cart-btn') { openDrawer(); return; }
+  if (t.id === 'drawer-close') { closeDrawer(); return; }
+  if (t.id === 'menu-toggle') { const o = document.body.classList.toggle('menu-open'); t.setAttribute('aria-expanded', String(o)); return; }
+  if (t.id === 'reset') { if (confirm('Effacer le panier, les comptes et les commandes de la maquette ?')) { S = blank(); save(); draft = {}; refreshCart(); location.hash = '#/'; render(); } return; }
+});
+overlay.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
+
+document.addEventListener('change', e => {
+  if (e.target.id === 'sort') { sort = e.target.value; render(); }
+  if (e.target.name === 'mode' || e.target.id === 'nocard') render();
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'message') {
+    document.getElementById('count').textContent = e.target.value.length;
+    document.getElementById('preview').textContent = e.target.value || '';
+  }
+  const f = e.target.closest && e.target.closest('.field.invalid'); if (f) f.classList.remove('invalid');
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target;
+  if (f.id === 'auth-form') {
+    if (!validate(f)) return;
+    const email = f.email.value.trim().toLowerCase();
+    if (f.dataset.mode === 'inscription') {
+      S.accounts[email] = {prenom:f.prenom.value.trim(), nom:f.nom.value.trim(), email};
+      toast('Compte créé, bienvenue !');
+    } else if (!S.accounts[email]) {
+      const guess = email.split('@')[0].split(/[._-]/);
+      S.accounts[email] = {prenom: cap(guess[0]), nom: cap(guess[1]||''), email};
+    }
+    S.user = S.accounts[email];
+    // Rattache les commandes passées sans compte avec le même e-mail
+    const past = S.orders.filter(o => o.email === email && o.dest && o.adresse).pop();
+    if (past && !S.user.adresse) Object.assign(S.user, {adresse:past.adresse, cp:past.cp, dest:past.dest});
+    S.guestEmail = null; save();
+    location.hash = '#/' + f.dataset.next;
+    return;
+  }
+  if (f.id === 'checkout') {
+    if (!validate(f)) { document.getElementById('checkout-alert').innerHTML = `<div class="alert">Il manque quelques informations, elles sont signalées en rouge.</div>`; return; }
+    captureDraft();
+    const u = S.user, d = draft, mode = d.mode || 'livraison';
+    const sh = shipping(mode);
+    const order = {
+      id: 'AP-' + String(1040 + S.orders.length + 1),
+      placed: new Date().toISOString().slice(0,10),
+      prenom: u ? u.prenom : d['c-prenom'], email: (u ? u.email : d['c-email']).toLowerCase(),
+      mode, date: d.date, creneau: d.creneau,
+      dest: d.dest, adresse: d.adresse, cp: d.cp,
+      message: d.nocard ? '' : (d.message||'').trim(),
+      items: cartLines().map(({p,q}) => ({id:p.id, name:p.name, price:p.price, q})),
+      total: subtotal() + sh,
+    };
+    S.orders.push(order);
+    if (u && mode === 'livraison') Object.assign(u, {adresse:d.adresse, cp:d.cp, dest:d.dest});
+    if (!u) S.guestEmail = order.email;
+    S.cart = {}; draft = {}; save(); refreshCart();
+    current = '';
+    location.hash = '#/confirmation?n=' + order.id;
+    return;
+  }
+  if (f.id === 'infos-form') {
+    if (!validate(f)) return;
+    const u = S.user, oldEmail = u.email, email = f['p-email'].value.trim().toLowerCase();
+    Object.assign(u, {prenom:f['p-prenom'].value.trim(), nom:f['p-nom'].value.trim(), email, tel:f['p-tel'].value.trim(), news:document.getElementById('p-news').checked});
+    if (email !== oldEmail) { delete S.accounts[oldEmail]; S.orders.forEach(o => { if (o.email === oldEmail) o.email = email; }); }
+    S.accounts[email] = u; save(); toast('Informations enregistrées'); render();
+  }
+});
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
+
+window.addEventListener('hashchange', render);
+window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('is-scrolled', window.scrollY > 10), {passive:true});
+
+refreshCart();
+render();
+})();
+</script>
+</body>
+</html>
