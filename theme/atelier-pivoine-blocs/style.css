@@ -110,6 +110,13 @@ Text Domain: atelier-pivoine-blocs
 }
 .ap-promise p { margin: 6px 0; font-size: .95rem; }
 
+/* ---------- Commande : les cartes livraison/retrait ne doivent pas chevaucher l'adresse ---------- */
+.woocommerce-checkout .ap-shipping-choice { display: flow-root; margin-bottom: 22px; }
+.woocommerce-checkout .ap-shipping-choice ul#shipping_method { float: none !important; height: auto; }
+.woocommerce .ap-shipping-choice ul#shipping_method li { display: block; float: none; height: auto; }
+/* Twenty Twenty-Five ne compte pas les marges intérieures dans la hauteur : la carte débordait */
+.ap-step *, .ap-step *::before, .ap-step *::after { box-sizing: border-box; }
+
 /* ---------- Mon compte ---------- */
 .ap-account { padding-top: 50px; }
 .section-eyebrow { margin: 0 0 8px; font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--wp--preset--color--rose); }
