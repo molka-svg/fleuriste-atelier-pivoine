@@ -17,7 +17,21 @@ Commerce, noms, adresses et e-mails **fictifs**.
 | Restauration | scripts/restauration.sh + capture Docker ci-dessous |
 
 ## Captures
-Accueil · Fiche produit · Panier · Commande · Vue téléphone (390 px) · Boutique restaurée dans Docker · E-mail Mailpit · Postman
+
+| Accueil | Vue téléphone (390 px) |
+|---|---|
+| ![Page d'accueil](docs/captures/01-accueil.jpg) | ![Accueil sur téléphone, 390 px](docs/captures/05-telephone.jpg) |
+
+**Fiche produit** : « Le bouquet de Camille », produit variable en 3 tailles
+![Fiche produit](docs/captures/02-fiche-produit.jpg)
+
+**Panier** : boutons − / +, barre « livraison offerte dès 60 € », code promo
+![Panier](docs/captures/03-panier.jpg)
+
+**Commande** : formulaire en 3 étapes, livraison ou retrait, date et créneau, message sur la carte
+![Commande](docs/captures/04-commande.jpg)
+
+À venir : boutique restaurée dans Docker · e-mail de commande dans Mailpit · collection Postman
 
 ## Relancer la boutique
 ```bash
@@ -31,6 +45,7 @@ bash scripts/restauration.sh
 ## Choix de design
 ## Sources des images
 Photos du thème : voir [theme/atelier-pivoine/images/CREDITS.md](theme/atelier-pivoine/images/CREDITS.md) (Unsplash et Pexels).
+Photos des 12 bouquets (dont les 4 ajoutés et les galeries) : voir [theme/atelier-pivoine-blocs/images/CREDITS.md](theme/atelier-pivoine-blocs/images/CREDITS.md).
 
 | Fichier | Auteur | Source (URL) |
 |---|---|---|
