@@ -2,8 +2,22 @@
 
 ![Logo](charte/logo.svg)
 
-Fleuriste de quartier fictif, Paris 11e. Équipe : Prénom A, Prénom B, Prénom C, Prénom D.
+Fleuriste de quartier fictif, Paris 11e. Équipe : Molka Ferchichi, Marietou, Prénom C, Prénom D.
 Commerce, noms, adresses et e-mails **fictifs**.
+
+## Qui a fait quoi
+
+**Molka Ferchichi**
+- Panier détaillé : boutons − / +, barre « livraison offerte dès 60 € », bouton « Continuer mes achats », panier vide, vue téléphone, code promo et bloc total stylisés.
+- Commande : formulaire en 3 étapes (coordonnées, livraison ou retrait, bouquet), cartes livraison / retrait, créneau en boutons, récapitulatif avec photos.
+- Thème en blocs `theme/atelier-pivoine-blocs` (enfant de Twenty Twenty-Five) : couleurs et polices dans Styles, en-tête, pied de page, accueil en blocs, fiche produit et boutique retouchées, page Mon compte.
+- Catalogue `scripts/catalogue.php` : 12 bouquets, 3 catégories, un bouquet en 3 tailles, une promotion datée, une rupture, UGS, galeries, photos Pexels recadrées.
+- Code promo BIENVENUE10 (-10 % dès 40 €), boutique en français.
+- Captures du README et note de cadrage `NOTE.md`.
+
+**Marietou**
+- Thème `theme/atelier-pivoine`, panier latéral, connexion et compte client.
+- Docker (`compose.yaml`), script `scripts/configurer-boutique.php`, maquette cliquable du parcours client.
 
 > 🚧 README en cours de rédaction.
 
