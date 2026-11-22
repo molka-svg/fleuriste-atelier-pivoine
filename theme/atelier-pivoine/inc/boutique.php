@@ -210,6 +210,22 @@ function atelier_pivoine_checkout_entry_url() {
     return add_query_arg('suite', 'commande', wc_get_page_permalink('myaccount'));
 }
 
+// Barre « livraison offerte dès 60 € » (panier latéral et panier détaillé)
+function atelier_pivoine_free_ship($subtotal, $class = '') {
+    $left    = ATELIER_PIVOINE_LIVRAISON_OFFERTE - $subtotal;
+    $percent = min(100, round($subtotal / ATELIER_PIVOINE_LIVRAISON_OFFERTE * 100));
+    ?>
+    <div class="free-ship <?php echo esc_attr($class); ?>">
+        <?php if ($left > 0) : ?>
+            Plus que <strong><?php echo wp_kses_post(wc_price($left)); ?></strong> pour la livraison offerte à Paris
+        <?php else : ?>
+            La livraison à Paris vous est offerte ✿
+        <?php endif; ?>
+        <span class="free-ship-bar" aria-hidden="true"><span style="width:<?php echo (int) $percent; ?>%"></span></span>
+    </div>
+    <?php
+}
+
 function atelier_pivoine_drawer_content() {
     $cart = WC()->cart;
 
@@ -227,8 +243,6 @@ function atelier_pivoine_drawer_content() {
     }
 
     $subtotal = (float) $cart->get_subtotal();
-    $left     = ATELIER_PIVOINE_LIVRAISON_OFFERTE - $subtotal;
-    $percent  = min(100, round($subtotal / ATELIER_PIVOINE_LIVRAISON_OFFERTE * 100));
     ?>
     <ul class="drawer-lines">
         <?php foreach ($cart->get_cart() as $item) :
@@ -253,14 +267,7 @@ function atelier_pivoine_drawer_content() {
     </ul>
 
     <div class="drawer-foot">
-        <div class="free-ship">
-            <?php if ($left > 0) : ?>
-                Plus que <strong><?php echo wp_kses_post(wc_price($left)); ?></strong> pour la livraison offerte à Paris
-            <?php else : ?>
-                La livraison à Paris vous est offerte ✿
-            <?php endif; ?>
-            <span class="free-ship-bar" aria-hidden="true"><span style="width:<?php echo (int) $percent; ?>%"></span></span>
-        </div>
+        <?php atelier_pivoine_free_ship($subtotal); ?>
         <div class="drawer-total">
             <span>Sous-total</span>
             <strong><?php echo wp_kses_post(wc_price($subtotal)); ?></strong>
@@ -288,6 +295,32 @@ add_action('wp_footer', function () {
     <div class="ap-toast" id="ap-toast" role="status" aria-live="polite"></div>
     <?php
 }, 5);
+
+/* ==========================================================================
+ * Panier détaillé (page /panier/)
+ * ======================================================================== */
+
+// Quantité : le sélecteur − / + du panier latéral remplace le champ numérique
+add_filter('woocommerce_cart_item_quantity', function ($html, $cart_item_key, $cart_item) {
+    $product = $cart_item['data'] ?? null;
+    if (!$product || !$product->is_type('simple') || $product->is_sold_individually()) {
+        return $html;
+    }
+    return atelier_pivoine_stepper((int) $cart_item['product_id'], (int) $cart_item['quantity'], $product->get_name());
+}, 10, 3);
+
+// Barre « livraison offerte » au-dessus de la liste
+add_action('woocommerce_before_cart_table', function () {
+    atelier_pivoine_free_ship((float) WC()->cart->get_subtotal(), 'cart-free-ship');
+});
+
+// Sous le bouton de commande : retour à la boutique
+add_action('woocommerce_proceed_to_checkout', function () {
+    printf('<a class="cart-continue" href="%s">← Continuer mes achats</a>', esc_url(wc_get_page_permalink('shop')));
+}, 30);
+
+// Panier vide : le message est dans woocommerce/cart/cart-empty.php
+remove_action('woocommerce_cart_is_empty', 'wc_empty_cart_message', 10);
 
 /* ==========================================================================
  * Boutique : filtres par prix
@@ -419,11 +452,12 @@ add_filter('woocommerce_checkout_fields', function ($fields) {
             'priority'          => 10,
         ],
         'ap_creneau' => [
-            'type'     => 'select',
+            'type'     => 'radio',
             'label'    => 'Créneau',
             'required' => true,
             'class'    => ['form-row-last'],
             'options'  => atelier_pivoine_creneaux(),
+            'default'  => 'matin',
             'priority' => 20,
         ],
         'ap_message' => [
@@ -551,3 +585,94 @@ add_action('woocommerce_before_checkout_form', function () {
 add_action('woocommerce_before_thankyou', function () {
     atelier_pivoine_steps(5);
 }, 1);
+
+/* ==========================================================================
+ * Commande : mise en page (modèles woocommerce/checkout/form-*.php)
+ * ======================================================================== */
+
+// Les bandeaux « Déjà client ? » et « Avez-vous un code promo ? » font doublon :
+// la connexion est une étape du parcours, le code promo est dans le panier.
+add_action('wp', function () {
+    remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10);
+    remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
+});
+
+// Avant que le client ait tapé son code postal, on affiche déjà les options
+// de Paris (livraison / retrait). Un code postal hors Paris n'aura aucune option.
+add_filter('woocommerce_cart_shipping_packages', function ($packages) {
+    foreach ($packages as &$package) {
+        if (empty($package['destination']['postcode'])) {
+            $package['destination']['postcode'] = '75011';
+        }
+    }
+    return $packages;
+});
+
+// Livraison offerte atteinte : on ne propose plus la livraison payante
+add_filter('woocommerce_package_rates', function ($rates) {
+    $has_free = false;
+    foreach ($rates as $rate) {
+        if ($rate->get_method_id() === 'free_shipping') {
+            $has_free = true;
+        }
+    }
+    if ($has_free) {
+        foreach ($rates as $id => $rate) {
+            if ($rate->get_method_id() === 'flat_rate') {
+                unset($rates[$id]);
+            }
+        }
+    }
+    return $rates;
+});
+
+function atelier_pivoine_is_pickup() {
+    $chosen = WC()->session ? (array) WC()->session->get('chosen_shipping_methods') : [];
+    foreach ($chosen as $method) {
+        if (strpos((string) $method, 'local_pickup') === 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Retrait à l'atelier : l'adresse n'est plus obligatoire (elle est masquée)
+add_filter('woocommerce_checkout_fields', function ($fields) {
+    if (atelier_pivoine_is_pickup()) {
+        foreach (['billing_address_1', 'billing_postcode', 'billing_city'] as $key) {
+            if (isset($fields['billing'][$key])) {
+                $fields['billing'][$key]['required'] = false;
+            }
+        }
+    }
+    return $fields;
+}, 20);
+
+// Récapitulatif : la photo du bouquet à côté de son nom
+add_filter('woocommerce_cart_item_name', function ($name, $cart_item) {
+    if (!is_checkout() || is_cart()) {
+        return $name;
+    }
+    $url = atelier_pivoine_product_image_url(wc_get_product($cart_item['product_id']), 200);
+    if (!$url) {
+        return $name;
+    }
+    return sprintf(
+        '<span class="ap-review-item"><img src="%s" alt="" width="56" height="56" loading="lazy">%s</span>',
+        esc_url($url),
+        $name
+    );
+}, 10, 2);
+
+// Récapitulatif : barre « livraison offerte », mise à jour avec le reste
+function atelier_pivoine_checkout_free_ship() {
+    atelier_pivoine_free_ship((float) WC()->cart->get_subtotal(), 'ap-checkout-freeship');
+}
+add_action('woocommerce_checkout_order_review', 'atelier_pivoine_checkout_free_ship', 5);
+
+add_filter('woocommerce_update_order_review_fragments', function ($fragments) {
+    ob_start();
+    atelier_pivoine_checkout_free_ship();
+    $fragments['.ap-checkout-freeship'] = ob_get_clean();
+    return $fragments;
+});

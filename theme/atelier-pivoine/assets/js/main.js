@@ -189,6 +189,11 @@
                     return;
                 }
                 var d = res.data;
+                // Panier détaillé : on recharge pour mettre à jour lignes et totaux
+                if (document.body.classList.contains('woocommerce-cart')) {
+                    window.location.reload();
+                    return;
+                }
                 document.querySelectorAll('.cart-count').forEach(function (c) {
                     c.textContent = d.count;
                     c.classList.toggle('is-empty', !d.count);
@@ -273,6 +278,35 @@
     document.querySelectorAll('[data-ap-autosubmit]').forEach(function (sel) {
         sel.addEventListener('change', function () { sel.form.submit(); });
     });
+
+    /* Commande : les options de livraison s'affichent en cartes dans l'étape ② */
+    var shipChoice = document.getElementById('ap-shipping-choice');
+    if (shipChoice && window.jQuery) {
+        var syncShipping = function () {
+            var list = document.querySelector('#order_review ul#shipping_method');
+            var cell = document.querySelector('#order_review tr.woocommerce-shipping-totals td');
+            if (list) {
+                shipChoice.innerHTML = '';
+                shipChoice.appendChild(list);
+            } else if (cell && !shipChoice.querySelector('ul')) {
+                var hint = document.createElement('p');
+                hint.className = 'ap-ship-hint';
+                hint.textContent = cell.textContent.trim() || 'Indiquez votre code postal pour voir les options.';
+                shipChoice.innerHTML = '';
+                shipChoice.appendChild(hint);
+            }
+            var chosen = shipChoice.querySelector('input.shipping_method:checked') ||
+                shipChoice.querySelector('input.shipping_method[type="hidden"]');
+            document.body.classList.toggle('ap-pickup', !!(chosen && /^local_pickup/.test(chosen.value)));
+            // Dans le récapitulatif, on rappelle seulement l'option choisie
+            if (cell && list) {
+                var label = chosen && shipChoice.querySelector('label[for="' + chosen.id + '"]');
+                cell.textContent = label ? label.textContent.trim() : '';
+            }
+        };
+        window.jQuery(document.body).on('updated_checkout', syncShipping);
+        syncShipping();
+    }
 
     /* Commande : compteur et aperçu du message de la carte */
     var msg = document.getElementById('ap_message');
