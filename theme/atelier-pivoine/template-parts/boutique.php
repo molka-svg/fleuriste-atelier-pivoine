@@ -4,10 +4,21 @@
  */
 
 $term        = is_product_taxonomy() ? get_queried_object() : null;
-$title       = $term ? $term->name : 'Bouquets de saison';
+$title       = $term ? $term->name : 'Nos bouquets';
 $description = $term && $term->description
     ? $term->description
-    : "Composés chaque matin avec les fleurs arrivées à l'aube. Livrés à Paris le jour même pour toute commande passée avant " . ATELIER_PIVOINE_HEURE_LIMITE . ' h.';
+    : "Bouquets de saison, grandes occasions ou petites attentions : tous composés à la main le matin même. Livrés à Paris le jour même pour toute commande passée avant " . ATELIER_PIVOINE_HEURE_LIMITE . ' h.';
+$shop_url    = wc_get_page_permalink('shop');
+
+// Catégories affichées en onglets (seulement celles qui contiennent des bouquets)
+$categories = get_terms([
+    'taxonomy'   => 'product_cat',
+    'hide_empty' => true,
+    'orderby'    => 'term_order',
+]);
+$categories = is_wp_error($categories) ? [] : array_filter($categories, function ($c) {
+    return !in_array($c->slug, ['uncategorized', 'non-classe'], true);
+});
 
 // Le dernier mot du titre passe en italique rose, comme sur l'accueil
 $words = explode(' ', $title);
@@ -27,15 +38,33 @@ $total     = (int) $GLOBALS['wp_query']->found_posts;
         </div>
         <div class="page-hero-content">
             <nav class="breadcrumb reveal" aria-label="Fil d'Ariane">
-                <a href="<?php echo esc_url(home_url('/')); ?>">Accueil</a> <span aria-hidden="true">›</span> <span>Nos bouquets</span>
+                <a href="<?php echo esc_url(home_url('/')); ?>">Accueil</a> <span aria-hidden="true">›</span>
+                <?php if ($term) : ?>
+                    <a href="<?php echo esc_url($shop_url); ?>">Nos bouquets</a> <span aria-hidden="true">›</span> <span><?php echo esc_html($term->name); ?></span>
+                <?php else : ?>
+                    <span>Nos bouquets</span>
+                <?php endif; ?>
             </nav>
-            <p class="section-eyebrow reveal">Rayon</p>
+            <p class="section-eyebrow reveal"><?php echo $term ? 'Rayon' : 'La boutique'; ?></p>
             <h1 class="reveal"><?php echo esc_html(implode(' ', $words)); ?><?php if ($last) : ?> <em><?php echo esc_html($last); ?></em><?php endif; ?></h1>
             <p class="page-hero-text reveal"><?php echo esc_html($description); ?></p>
         </div>
     </section>
 
     <div class="shop-wrap">
+
+        <?php if (count($categories) > 1) : ?>
+            <nav class="shop-cats" aria-label="Catégories de bouquets">
+                <a class="shop-cat" href="<?php echo esc_url($shop_url); ?>"<?php echo $term ? '' : ' aria-current="page"'; ?>>
+                    Tous <span class="shop-cat-count"><?php echo (int) wp_count_posts('product')->publish; ?></span>
+                </a>
+                <?php foreach ($categories as $c) : ?>
+                    <a class="shop-cat" href="<?php echo esc_url(get_term_link($c)); ?>"<?php echo ($term && (int) $term->term_id === (int) $c->term_id) ? ' aria-current="page"' : ''; ?>>
+                        <?php echo esc_html($c->name); ?> <span class="shop-cat-count"><?php echo (int) $c->count; ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+        <?php endif; ?>
 
         <div class="shop-tools reveal">
             <div class="chips" role="group" aria-label="Filtrer par prix">
