@@ -98,6 +98,12 @@ $bouquets = [
     ['Champêtre',             'Pivoine, seringat et feuillages cueillis dans les champs',          35, false],
     ['Grand jour',            'Roses pêche et jacinthes pour les tables de fête',                  89, false],
 ];
+// Si le catalogue complet (scripts/catalogue.php) est déjà installé, on n'y touche pas :
+// relancer ce script remettrait sinon les 8 bouquets de départ par-dessus.
+if (function_exists('wc_get_product_id_by_sku') && wc_get_product_id_by_sku('AP-BQ-001')) {
+    echo "Catalogue complet déjà installé : bouquets laissés tels quels\n";
+    $bouquets = [];
+}
 foreach ($bouquets as $i => [$name, $desc, $price, $featured]) {
     $existing = get_page_by_title($name, OBJECT, 'product');
     $p = $existing ? wc_get_product($existing->ID) : new WC_Product_Simple();
@@ -131,6 +137,22 @@ if (!$zone) {
     $pick = $zone->add_shipping_method('local_pickup');
     update_option("woocommerce_local_pickup_{$pick}_settings", ['title' => "Retrait à l'atelier", 'tax_status' => 'none', 'cost' => '']);
     echo "Zone de livraison Paris créée\n";
+}
+
+// Hors de Paris : pas de livraison, mais le retrait à l'atelier reste possible.
+// Sans cette zone, une adresse hors 75 (souvent remplie par le navigateur) ne
+// proposait plus aucun mode, même pas le retrait : « Aucun mode d'expédition… ».
+$hors_paris = null;
+foreach (WC_Shipping_Zones::get_zones() as $z) if ($z['zone_name'] === 'France hors Paris') $hors_paris = new WC_Shipping_Zone($z['id']);
+if (!$hors_paris) {
+    $hors_paris = new WC_Shipping_Zone();
+    $hors_paris->set_zone_name('France hors Paris');
+    $hors_paris->set_locations([['code' => 'FR', 'type' => 'country']]);
+    $hors_paris->set_zone_order(1); // après la zone Paris, plus précise
+    $hors_paris->save();
+    $pick = $hors_paris->add_shipping_method('local_pickup');
+    update_option("woocommerce_local_pickup_{$pick}_settings", ['title' => "Retrait à l'atelier", 'tax_status' => 'none', 'cost' => '']);
+    echo "Zone France hors Paris créée (retrait à l'atelier seulement)\n";
 }
 
 // Paiement de test : paiement au retrait / à la livraison
