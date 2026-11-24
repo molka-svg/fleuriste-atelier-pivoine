@@ -34,7 +34,7 @@ update_option('woocommerce_price_num_decimals', 2);
 update_option('woocommerce_allowed_countries', 'specific');
 update_option('woocommerce_specific_allowed_countries', ['FR']);
 update_option('woocommerce_ship_to_countries', '');
-update_option('woocommerce_calc_taxes', 'no');
+// La TVA est réglée dans scripts/vendre.php
 update_option('woocommerce_coming_soon', 'no');
 update_option('woocommerce_store_pages_only', 'no');
 update_option('woocommerce_onboarding_profile', ['skipped' => true]);
@@ -98,6 +98,11 @@ $bouquets = [
     ['Champêtre',             'Pivoine, seringat et feuillages cueillis dans les champs',          35, false],
     ['Grand jour',            'Roses pêche et jacinthes pour les tables de fête',                  89, false],
 ];
+// Catalogue complet (scripts/catalogue.php) déjà installé : on n'y touche pas
+if (wc_get_product_id_by_sku('AP-BQ-001')) {
+    echo "Catalogue déjà installé : bouquets laissés tels quels\n";
+    $bouquets = [];
+}
 foreach ($bouquets as $i => [$name, $desc, $price, $featured]) {
     $existing = get_page_by_title($name, OBJECT, 'product');
     $p = $existing ? wc_get_product($existing->ID) : new WC_Product_Simple();
@@ -132,6 +137,40 @@ if (!$zone) {
     update_option("woocommerce_local_pickup_{$pick}_settings", ['title' => "Retrait à l'atelier", 'tax_status' => 'none', 'cost' => '']);
     echo "Zone de livraison Paris créée\n";
 }
+
+// Livraison : zone France (sujet : deux modes de livraison + gratuité dès un montant).
+// Paris, plus précise, passe avant : coursier (offert dès 60 €) et retrait.
+// Le retrait est aussi proposé dans la zone France, mais ce n'est pas un mode de livraison.
+$paris = $france = null;
+foreach (WC_Shipping_Zones::get_zones() as $z) {
+    if ($z['zone_name'] === 'Paris') $paris = new WC_Shipping_Zone($z['id']);
+    if (in_array($z['zone_name'], ['France', 'France hors Paris'], true)) $france = new WC_Shipping_Zone($z['id']);
+}
+$paris->set_zone_order(0);
+$paris->save();
+foreach ($paris->get_shipping_methods() as $m) {
+    if ($m->id === 'flat_rate') {
+        update_option($m->get_instance_option_key(), array_merge($m->instance_settings, ['title' => 'Coursier à Paris']));
+    }
+}
+if (!$france) $france = new WC_Shipping_Zone();
+$france->set_zone_name('France');
+$france->set_locations([['code' => 'FR', 'type' => 'country']]);
+$france->set_zone_order(1);
+$france->save();
+$existants = array_map(function ($m) { return $m->id . '|' . $m->get_title(); }, $france->get_shipping_methods());
+foreach ([
+    ['flat_rate', ['title' => 'Livraison standard (48 h)', 'tax_status' => 'none', 'cost' => '6.90']],
+    ['flat_rate', ['title' => 'Livraison express (24 h)', 'tax_status' => 'none', 'cost' => '12.90']],
+    ['free_shipping', ['title' => 'Livraison standard offerte', 'requires' => 'min_amount', 'min_amount' => '60', 'ignore_discounts' => 'no']],
+    ['local_pickup', ['title' => "Retrait à l'atelier", 'tax_status' => 'none', 'cost' => '']],
+] as [$type, $reglages]) {
+    if (in_array($type . '|' . $reglages['title'], $existants, true)) continue;
+    $instance = $france->add_shipping_method($type);
+    update_option("woocommerce_{$type}_{$instance}_settings", $reglages);
+}
+WC_Cache_Helper::get_transient_version('shipping', true);
+echo "Zone France : standard, express, offerte dès 60 €, retrait\n";
 
 // Paiement de test : paiement au retrait / à la livraison
 update_option('woocommerce_cod_settings', [
