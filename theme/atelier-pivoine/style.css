@@ -668,7 +668,12 @@ h1 em, h2 em { font-style: italic; color: var(--pink); }
 .entry-header h2 { font-size: 2.2rem; margin: 0 0 14px; }
 .entry-header h2 a:hover { color: var(--pink); }
 .entry-content > * + * { margin-top: 1.2em; }
-.entry-content a:not(.btn-primary):not(.button) { color: var(--pink); border-bottom: 1px solid currentColor; }
+/* Liens dans le texte des pages : roses et soulignés. Les pages WooCommerce (.woocommerce)
+   ont leurs propres menus et cartes : seuls les liens « texte » de leurs paragraphes sont concernés. */
+.entry-content > :not(.woocommerce) a:not(.btn-primary):not(.button),
+.entry-content .woocommerce p a:not([class]),
+.entry-content .woocommerce-privacy-policy-link,
+.entry-content .woocommerce-terms-and-conditions-link { color: var(--pink); border-bottom: 1px solid currentColor; }
 
 .pagination, .woocommerce-pagination { margin-top: 40px; }
 .page-numbers { display: inline-block; padding: 6px 14px; border-radius: 999px; }
@@ -1609,4 +1614,169 @@ input[type="checkbox"] { accent-color: var(--green); width: 18px; height: 18px; 
         transform-origin: 0 50%; transform: scaleX(0); pointer-events: none;
     }
     .admin-bar .scroll-progress { top: 32px; }
+}
+
+
+/* ==========================================================================
+   MON COMPTE : menu latéral, commandes, adresses, formulaires, détail
+   ========================================================================== */
+/* Deux colonnes : menu fixe à gauche, contenu qui défile à droite.
+   WooCommerce ajoute des ::before / ::after (vieille astuce de float) : dans une grille,
+   ils prendraient la première case et pousseraient le menu à droite. On les retire. */
+.woocommerce-account.logged-in .woocommerce { grid-template-columns: 290px minmax(0, 1fr); gap: 28px; align-items: start; }
+.woocommerce-account.logged-in .woocommerce::before,
+.woocommerce-account.logged-in .woocommerce::after { content: none; display: none; }
+.woocommerce-account.logged-in .woocommerce-MyAccount-navigation { grid-column: 1; grid-row: 1; }
+.woocommerce-account.logged-in .woocommerce-MyAccount-content { grid-column: 2; grid-row: 1; min-width: 0; }
+
+/* Menu latéral : reste visible pendant que le contenu défile */
+.account-nav {
+    position: sticky; top: 110px; align-self: start;
+    max-height: calc(100vh - 130px); overflow-y: auto;
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; box-shadow: 0 24px 50px -40px rgba(47, 74, 58, .6);
+}
+.account-card { display: flex; align-items: center; gap: 14px; padding: 4px 4px 18px; border-bottom: 1px solid var(--border); }
+.account-card-avatar {
+    flex: none; width: 54px; height: 54px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--green); color: var(--cream);
+    font-family: var(--font-title); font-size: 1.35rem; letter-spacing: .02em;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--petal) 45%, var(--cream));
+}
+.account-card-name { margin: 0; font-family: var(--font-title); font-size: 1.35rem; line-height: 1.1; color: var(--green); }
+.account-card-since { margin: 4px 0 0; font-size: .82rem; color: var(--muted); }
+.account-nav ul { position: static; margin: 12px 0 0; padding: 0; background: none; border: 0; box-shadow: none; list-style: none; display: grid; gap: 2px; }
+.account-nav a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 14px; color: var(--green); font-weight: 500;
+    transition: background .3s, color .3s, transform .3s var(--ease);
+}
+.account-nav a:hover { background: color-mix(in srgb, var(--petal) 40%, var(--cream)); transform: translateX(3px); }
+.account-nav .is-active a, .account-nav a[aria-current="page"] { background: var(--green); color: var(--cream); }
+.account-nav-icon { flex: none; opacity: .85; }
+.account-nav .woocommerce-MyAccount-navigation-link--customer-logout { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.account-nav .woocommerce-MyAccount-navigation-link--customer-logout a { color: var(--muted); }
+.account-nav .woocommerce-MyAccount-navigation-link--customer-logout a:hover { color: var(--pink); }
+
+/* Titres des rubriques */
+.account-section-head { margin-bottom: 26px; }
+.account-section-head .section-eyebrow { margin-bottom: 8px; }
+.account-section-head h2 { font-size: clamp(2.2rem, 4vw, 3.2rem); margin: 0 0 8px; }
+.account-section-head h2 em { color: var(--pink); }
+.account-section-head p:not(.section-eyebrow) { color: var(--muted); margin: 0; max-width: 560px; }
+
+/* Raccourcis de l'accueil du compte */
+.account-shortcuts a { color: inherit; }
+
+/* Mes commandes : cartes */
+.order-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.order-card {
+    display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 20px; align-items: start;
+    padding: 16px; border-radius: 22px; background: var(--cream); border: 1px solid var(--border);
+    transition: transform .4s var(--ease), box-shadow .4s, border-color .3s;
+}
+.order-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--pink) 45%, transparent); box-shadow: 0 24px 40px -30px rgba(47, 74, 58, .7); }
+.order-card-photo { display: block; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: linear-gradient(160deg, var(--petal), var(--cream)); }
+.order-card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.order-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.order-card-top h3 { margin: 0; font-size: 1.5rem; }
+.order-card-top h3 a { color: var(--green); }
+.order-card-top h3 a:hover { color: var(--pink); }
+.order-card-items { margin: 4px 0 12px; color: var(--muted); font-size: .95rem; }
+.order-card-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 18px; margin: 0; }
+.order-card-meta dt { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.order-card-meta dd { margin: 2px 0 0; font-size: .95rem; }
+.order-card-meta strong { color: var(--green); }
+.order-card-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.order-btn { padding: 11px 22px; font-size: .9rem; }
+.order-pagination { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
+.order-status.status-pending, .order-status.status-on-hold { background: #FFF1D6; color: #7A4B00; }
+.order-status.status-cancelled, .order-status.status-failed, .order-status.status-refunded { background: #F6E3E1; color: #8C1D18; }
+.account-empty { text-align: center; padding: 40px 10px; }
+.account-empty-title { font-family: var(--font-title); font-style: italic; font-size: 1.9rem; color: var(--green); margin-bottom: 4px; }
+.account-empty p:not(.account-empty-title) { color: var(--muted); }
+
+/* Mes adresses : cartes */
+.address-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.woocommerce-account .address-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+    padding: 24px; border-radius: 22px; background: var(--cream); border: 1px solid var(--border);
+}
+.address-card h3 { margin: 0; font-size: 1.5rem; }
+.address-card address { font-style: normal; line-height: 1.7; margin: 0; flex: 1; }
+.address-empty { color: var(--muted); }
+.address-card .edit { padding: 10px 22px; font-size: .9rem; }
+
+/* Formulaires : Mes informations et Modifier l'adresse */
+.woocommerce-MyAccount-content form h2,
+.woocommerce-MyAccount-content form h3 { font-size: 2rem; margin: 0 0 20px; }
+.woocommerce-EditAccountForm,
+.woocommerce-address-fields__field-wrapper { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+.woocommerce-EditAccountForm > *,
+.woocommerce-address-fields__field-wrapper > * { grid-column: 1 / -1; }
+.woocommerce-account form .form-row-first,
+.woocommerce-account form .form-row-last { grid-column: auto; float: none; width: auto; }
+.woocommerce-account form .form-row-wide { float: none; width: auto; }
+.woocommerce-EditAccountForm .clear { display: none; }
+.woocommerce-EditAccountForm fieldset {
+    margin: 8px 0 20px; padding: 20px 22px 6px; border: 1px solid var(--border); border-radius: 20px; background: var(--cream);
+}
+.woocommerce-EditAccountForm legend { padding: 0 10px; font-family: var(--font-title); font-size: 1.35rem; color: var(--green); }
+.woocommerce-EditAccountForm em { font-style: normal; font-size: .84rem; color: var(--muted); }
+.woocommerce-account form .button[type="submit"] { justify-self: start; margin-top: 6px; }
+
+/* Détail d'une commande */
+.woocommerce-account .woocommerce-MyAccount-content > p:first-of-type { color: var(--muted); }
+.woocommerce-account .woocommerce-MyAccount-content mark { background: none; color: var(--green); font-weight: 700; }
+.woocommerce-account .woocommerce-MyAccount-content mark.order-status {
+    padding: 3px 12px; border-radius: 999px; background: #FFF1D6; color: #7A4B00; font-size: .85rem;
+}
+.woocommerce-order-details__title, .woocommerce-column__title { font-size: 1.8rem; margin: 24px 0 14px; }
+.woocommerce-account table.shop_table { border: 1px solid var(--border); border-radius: 18px; border-collapse: separate; overflow: hidden; }
+.woocommerce-account table.shop_table th, .woocommerce-account table.shop_table td { padding: 14px 18px; border-color: var(--border); }
+.woocommerce-account table.shop_table thead th { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: var(--cream); }
+.woocommerce-account table.shop_table tfoot tr:last-child th,
+.woocommerce-account table.shop_table tfoot tr:nth-last-child(2) td .amount { color: var(--green); }
+.woocommerce-account .woocommerce-customer-details .col2-set { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.woocommerce-account .woocommerce-customer-details .col2-set::before,
+.woocommerce-account .woocommerce-customer-details .col2-set::after { display: none; }
+.woocommerce-account .woocommerce-customer-details .col2-set > * { float: none; width: auto; }
+.woocommerce-account .woocommerce-customer-details address {
+    font-style: normal; line-height: 1.7; padding: 20px 22px; border-radius: 20px; background: var(--cream); border: 1px solid var(--border);
+}
+
+/* Tablette et téléphone */
+@media (max-width: 1000px) {
+    .woocommerce-account.logged-in .woocommerce { grid-template-columns: 1fr; }
+    .woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+    .woocommerce-account.logged-in .woocommerce-MyAccount-content { grid-column: 1; grid-row: auto; }
+    .account-nav { position: static; padding: 14px; max-height: none; overflow: visible; }
+    .account-card { padding-bottom: 12px; }
+    .account-nav ul {
+        display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none;
+        margin: 12px -14px 0; padding: 0 14px 2px; scroll-snap-type: x proximity;
+    }
+    .account-nav ul::-webkit-scrollbar { display: none; }
+    .account-nav li { flex: none; scroll-snap-align: start; }
+    .account-nav a { white-space: nowrap; padding: 10px 14px; background: var(--cream); }
+    .account-nav a:hover { transform: none; }
+    .account-nav .woocommerce-MyAccount-navigation-link--customer-logout { margin: 0; padding: 0; border: 0; }
+}
+@media (max-width: 700px) {
+    .order-card { grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 12px; }
+    .order-card-top h3 { font-size: 1.2rem; }
+    .order-card-meta { grid-template-columns: 1fr; }
+    .order-card-actions .order-btn { flex: 1; }
+    .address-cards,
+    .woocommerce-EditAccountForm,
+    .woocommerce-address-fields__field-wrapper,
+    .woocommerce-account .woocommerce-customer-details .col2-set { grid-template-columns: 1fr; }
+    .woocommerce-account table.shop_table th, .woocommerce-account table.shop_table td { padding: 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .js .order-card { animation: rise .6s var(--ease) both; }
+    .js .order-card:nth-child(2) { animation-delay: .07s; }
+    .js .order-card:nth-child(3) { animation-delay: .14s; }
+    .js .order-card:nth-child(n+4) { animation-delay: .2s; }
 }
