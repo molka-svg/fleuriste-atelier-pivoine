@@ -200,6 +200,8 @@
                 });
                 if (inner) inner.innerHTML = d.drawer;
                 renderControls(d.qtys || {});
+                // Le bloc mini-panier de l'en-tête se met à jour lui aussi
+                document.body.dispatchEvent(new CustomEvent('wc-blocks_added_to_cart', { bubbles: true, detail: { preserveCartData: false } }));
                 if (opts.added) {
                     bumpCart();
                     toast(opts.added);

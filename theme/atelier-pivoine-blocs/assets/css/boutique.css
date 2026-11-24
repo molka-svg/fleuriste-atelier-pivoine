@@ -2,17 +2,17 @@
    Repris du thème atelier-pivoine. Couleurs et polices du site : theme.json. */
 
 :root {
-    --green: #2F4A3A;
-    --pink: #D9677C;
-    --cream: #FBF6EF;
-    --ink: #1F1F1F;
-    --petal: #F3B6C1;
-    --white: #FFFFFF;
+    --green: var(--wp--preset--color--vert, #2F4A3A);
+    --pink: var(--wp--preset--color--rose, #D9677C);
+    --cream: var(--wp--preset--color--creme, #FBF6EF);
+    --ink: var(--wp--preset--color--encre, #1F1F1F);
+    --petal: var(--wp--preset--color--petale, #F3B6C1);
+    --white: var(--wp--preset--color--blanc, #FFFFFF);
     --muted: #726E68;
     --border: rgba(47, 74, 58, .15);
 
-    --font-title: 'DM Serif Display', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-title: var(--wp--preset--font-family--titres, 'DM Serif Display', Georgia, serif);
+    --font-body: var(--wp--preset--font-family--texte, 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif);
 
     --radius: 24px;
     --radius-xl: 32px;
@@ -83,7 +83,9 @@
 .entry-header h2 { font-size: 2.2rem; margin: 0 0 14px; }
 .entry-header h2 a:hover { color: var(--pink); }
 .entry-content > * + * { margin-top: 1.2em; }
-.entry-content a:not(.btn-primary):not(.button) { color: var(--pink); border-bottom: 1px solid currentColor; }
+.entry-content > :not(.woocommerce) a:not(.btn-primary):not(.button),
+.entry-content .woocommerce p a:not([class]),
+.entry-content .woocommerce-privacy-policy-link { color: var(--pink); border-bottom: 1px solid currentColor; }
 
 .pagination, .woocommerce-pagination { margin-top: 40px; }
 .page-numbers { display: inline-block; padding: 6px 14px; border-radius: 999px; }

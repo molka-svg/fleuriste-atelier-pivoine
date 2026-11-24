@@ -86,4 +86,5 @@ function atelier_pivoine_img($key, $alt = '', $width = 1000, $eager = false) {
 // Boutique : panier latéral, sélecteur − / +, panier, commande, compte client
 if (class_exists('WooCommerce')) {
     require_once get_stylesheet_directory() . '/inc/boutique.php';
+    require_once get_stylesheet_directory() . '/inc/design.php';
 }

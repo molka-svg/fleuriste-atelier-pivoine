@@ -217,9 +217,9 @@ function atelier_pivoine_free_ship($subtotal, $class = '') {
     ?>
     <div class="free-ship <?php echo esc_attr($class); ?>">
         <?php if ($left > 0) : ?>
-            Plus que <strong><?php echo wp_kses_post(wc_price($left)); ?></strong> pour la livraison offerte à Paris
+            Plus que <strong><?php echo wp_kses_post(wc_price($left)); ?></strong> pour la livraison offerte
         <?php else : ?>
-            La livraison à Paris vous est offerte ✿
+            La livraison vous est offerte ✿
         <?php endif; ?>
         <span class="free-ship-bar" aria-hidden="true"><span style="width:<?php echo (int) $percent; ?>%"></span></span>
     </div>
@@ -242,7 +242,7 @@ function atelier_pivoine_drawer_content() {
         return;
     }
 
-    $subtotal = (float) $cart->get_subtotal();
+    $subtotal = (float) $cart->get_displayed_subtotal();
     ?>
     <ul class="drawer-lines">
         <?php foreach ($cart->get_cart() as $item) :
@@ -272,7 +272,7 @@ function atelier_pivoine_drawer_content() {
             <span>Sous-total</span>
             <strong><?php echo wp_kses_post(wc_price($subtotal)); ?></strong>
         </div>
-        <p class="drawer-note">Livraison 8,90 € à Paris, ou retrait gratuit à l'atelier.</p>
+        <p class="drawer-note">Coursier à Paris 8,90 €, France dès 6,90 €, ou retrait gratuit à l'atelier.</p>
         <a class="btn-primary btn-block" href="<?php echo esc_url(atelier_pivoine_checkout_entry_url()); ?>">Commander</a>
         <a class="drawer-link" href="<?php echo esc_url(wc_get_cart_url()); ?>">Voir le panier détaillé</a>
     </div>
@@ -311,7 +311,7 @@ add_filter('woocommerce_cart_item_quantity', function ($html, $cart_item_key, $c
 
 // Barre « livraison offerte » au-dessus de la liste
 add_action('woocommerce_before_cart_table', function () {
-    atelier_pivoine_free_ship((float) WC()->cart->get_subtotal(), 'cart-free-ship');
+    atelier_pivoine_free_ship((float) WC()->cart->get_displayed_subtotal(), 'cart-free-ship');
 });
 
 // Sous le bouton de commande : retour à la boutique
@@ -598,7 +598,7 @@ add_action('wp', function () {
 });
 
 // Avant que le client ait tapé son code postal, on affiche déjà les options
-// de Paris (livraison / retrait). Un code postal hors Paris n'aura aucune option.
+// de Paris (livraison / retrait). Hors Paris, la zone France prend le relais (standard, express, retrait).
 add_filter('woocommerce_cart_shipping_packages', function ($packages) {
     foreach ($packages as &$package) {
         if (empty($package['destination']['postcode'])) {
@@ -608,20 +608,21 @@ add_filter('woocommerce_cart_shipping_packages', function ($packages) {
     return $packages;
 });
 
-// Livraison offerte atteinte : on ne propose plus la livraison payante
+// Livraison offerte atteinte : elle remplace le mode payant le moins cher
+// (la standard) ; l'express reste proposée à ceux qui sont pressés.
 add_filter('woocommerce_package_rates', function ($rates) {
-    $has_free = false;
-    foreach ($rates as $rate) {
+    $offerte = false;
+    $moins_cher = null;
+    foreach ($rates as $id => $rate) {
         if ($rate->get_method_id() === 'free_shipping') {
-            $has_free = true;
+            $offerte = true;
+        } elseif ($rate->get_method_id() === 'flat_rate'
+            && ($moins_cher === null || (float) $rate->get_cost() < (float) $rates[$moins_cher]->get_cost())) {
+            $moins_cher = $id;
         }
     }
-    if ($has_free) {
-        foreach ($rates as $id => $rate) {
-            if ($rate->get_method_id() === 'flat_rate') {
-                unset($rates[$id]);
-            }
-        }
+    if ($offerte && $moins_cher !== null) {
+        unset($rates[$moins_cher]);
     }
     return $rates;
 });
@@ -666,7 +667,7 @@ add_filter('woocommerce_cart_item_name', function ($name, $cart_item) {
 
 // Récapitulatif : barre « livraison offerte », mise à jour avec le reste
 function atelier_pivoine_checkout_free_ship() {
-    atelier_pivoine_free_ship((float) WC()->cart->get_subtotal(), 'ap-checkout-freeship');
+    atelier_pivoine_free_ship((float) WC()->cart->get_displayed_subtotal(), 'ap-checkout-freeship');
 }
 add_action('woocommerce_checkout_order_review', 'atelier_pivoine_checkout_free_ship', 5);
 
@@ -676,3 +677,15 @@ add_filter('woocommerce_update_order_review_fragments', function ($fragments) {
     $fragments['.ap-checkout-freeship'] = ob_get_clean();
     return $fragments;
 });
+
+/* ==========================================================================
+ * Mon compte : titres des pages « Mes informations » et « Modifier l'adresse »
+ * ======================================================================== */
+add_action('woocommerce_before_edit_account_form', function () {
+    echo '<header class="account-section-head"><p class="section-eyebrow">Mon compte</p><h2>Mes <em>informations</em></h2>'
+        . '<p>Votre nom, votre e-mail et votre mot de passe.</p></header>';
+});
+
+add_filter('woocommerce_my_account_edit_address_title', function ($title, $load_address) {
+    return 'shipping' === $load_address ? 'Adresse de livraison' : 'Adresse de facturation';
+}, 10, 2);

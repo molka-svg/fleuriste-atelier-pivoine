@@ -3,7 +3,7 @@ Theme Name: Atelier Pivoine (blocs)
 Template: twentytwentyfive
 Author: Équipe Atelier Pivoine
 Description: Thème enfant de Twenty Twenty-Five pour la boutique Atelier Pivoine, fleuriste de quartier à Paris 11e. Couleurs et polices dans theme.json (Styles), en-tête, pied de page et modèles modifiables dans Apparence > Éditeur.
-Version: 1.0
+Version: 1.1
 Requires at least: 6.8
 Requires PHP: 8.0
 Text Domain: atelier-pivoine-blocs
@@ -131,44 +131,8 @@ Text Domain: atelier-pivoine-blocs
 .woocommerce-account .auth .woocommerce-form-register__submit { width: 100%; margin-top: 6px; }
 .woocommerce-account .auth-side .section-eyebrow { font-weight: 600; }
 
-/* Connecté : menu à gauche, contenu à droite */
-.woocommerce-account.logged-in .woocommerce { grid-template-columns: 270px 1fr; gap: 34px; }
-/* La zone des messages WooCommerce prenait la 1re case de la grille */
-.woocommerce-account.logged-in .woocommerce > .woocommerce-notices-wrapper { grid-column: 1 / -1; }
-.woocommerce-account.logged-in .woocommerce > .woocommerce-notices-wrapper:empty { display: none; }
-.woocommerce-account.logged-in .entry-content > .woocommerce::before,
-.woocommerce-account.logged-in .entry-content > .woocommerce::after { display: none; }
-.woocommerce-account.logged-in .entry-content > .woocommerce { max-width: none; width: 100%; }
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation ul li { padding: 0; margin: 0 0 2px; border: 0; }
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation ul li a,
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation ul li.is-active a { text-decoration: none; }
-/* Liens du texte : un seul soulignement (la bordure rose), pas deux */
+/* Connecté : grille, menu, commandes et adresses sont dans assets/css/design.css */
 .entry-content a:not(.btn-primary):not(.button) { text-decoration: none; }
-/* Adresses : deux cartes côte à côte, lien « Modifier » en bouton */
-.woocommerce-account .woocommerce-Addresses .woocommerce-Address { width: auto !important; float: none !important; }
-.woocommerce-account .woocommerce-Address-title { display: flex; flex-direction: column; gap: 6px; }
-.woocommerce-account .entry-content .woocommerce-Address-title a.edit {
-    align-self: flex-start; float: none; padding: 6px 14px; border: 1px solid rgba(47, 74, 58, .2); border-radius: 999px;
-    font-size: .85rem; font-weight: 600; color: var(--wp--preset--color--vert);
-}
-.woocommerce-account .entry-content .woocommerce-Address-title a.edit:hover { background: var(--wp--preset--color--vert); color: var(--wp--preset--color--creme); }
-/* Liens du compte : verts, sans le soulignement rose des liens de texte */
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation a { color: var(--wp--preset--color--vert); border-bottom: 0; text-decoration: none; }
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation .is-active a { color: var(--wp--preset--color--creme); }
-.woocommerce-account .entry-content .woocommerce-MyAccount-navigation-link--customer-logout a { color: #726E68; }
-.woocommerce-account .entry-content .account-shortcuts a { border: 1px solid rgba(47, 74, 58, .12); color: var(--wp--preset--color--encre); }
-.woocommerce-account .entry-content .account-shortcuts a:hover { border-color: var(--wp--preset--color--petale); }
-.woocommerce-account .woocommerce-MyAccount-navigation ul { top: 100px; padding: 12px; }
-.woocommerce-account .woocommerce-MyAccount-navigation li { margin: 0; }
-.woocommerce-account .woocommerce-MyAccount-navigation a { text-decoration: none; }
-.woocommerce-account .woocommerce-MyAccount-navigation li a::before { display: inline-block; width: 26px; color: var(--wp--preset--color--rose); }
-.woocommerce-MyAccount-navigation-link--dashboard a::before { content: '✿'; }
-.woocommerce-MyAccount-navigation-link--orders a::before { content: '❀'; }
-.woocommerce-MyAccount-navigation-link--downloads a::before { content: '↓'; }
-.woocommerce-MyAccount-navigation-link--edit-address a::before { content: '⌂'; }
-.woocommerce-MyAccount-navigation-link--edit-account a::before { content: '☺'; }
-.woocommerce-MyAccount-navigation-link--customer-logout a::before { content: '→'; }
-.woocommerce-account .woocommerce-MyAccount-navigation .is-active a::before { color: var(--wp--preset--color--petale); }
 
 .account-hello { padding-bottom: 22px; border-bottom: 1px dashed rgba(47, 74, 58, .2); }
 .account-hello h2 { margin-top: 0; }
@@ -187,27 +151,6 @@ Text Domain: atelier-pivoine-blocs
 .account-shortcuts strong { font-family: var(--wp--preset--font-family--titres); font-size: 1.25rem; font-weight: 400; color: var(--wp--preset--color--vert); }
 .account-shortcuts span { font-size: .88rem; color: #5f5b55; }
 .account-last .section-link { display: inline-block; margin-top: 4px; }
-
-/* Commandes, adresses, informations */
-.woocommerce-account .woocommerce-orders-table { border: 0; border-collapse: separate; border-spacing: 0; }
-.woocommerce-account .woocommerce-orders-table th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: #726E68; font-weight: 600; border: 0; }
-.woocommerce-account .woocommerce-orders-table td { border: 0; border-top: 1px solid rgba(47, 74, 58, .12); padding: 16px 10px; vertical-align: middle; }
-.woocommerce-account .woocommerce-orders-table .woocommerce-button,
-.woocommerce-account .woocommerce-MyAccount-content .button {
-    border-radius: 999px; padding: 10px 20px; background: var(--wp--preset--color--vert); color: var(--wp--preset--color--creme); font-weight: 600;
-}
-.woocommerce-account .woocommerce-orders-table .woocommerce-button:hover,
-.woocommerce-account .woocommerce-MyAccount-content .button:hover { background: var(--wp--preset--color--rose); color: var(--wp--preset--color--blanc); }
-.woocommerce-account .woocommerce-Addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.woocommerce-account .woocommerce-Addresses::before, .woocommerce-account .woocommerce-Addresses::after { display: none; }
-.woocommerce-account .woocommerce-Address { float: none; width: auto; padding: 20px; border-radius: 20px; background: var(--wp--preset--color--creme); border: 1px solid rgba(47, 74, 58, .12); }
-.woocommerce-account .woocommerce-Address-title h2 { font-size: 1.5rem; margin: 0 0 8px; }
-.woocommerce-account .woocommerce-Address address { font-style: normal; line-height: 1.7; }
-
-@media (max-width: 1000px) {
-    .woocommerce-account.logged-in .woocommerce { grid-template-columns: 1fr; }
-    .woocommerce-account .woocommerce-MyAccount-navigation ul { position: static; }
-}
 
 .ap-account-help { margin-top: 40px; text-align: center; color: #5f5b55; font-size: .95rem; }
 .ap-account-help a { color: var(--wp--preset--color--vert); }
@@ -237,7 +180,4 @@ Text Domain: atelier-pivoine-blocs
     .ap-products .wp-block-post-title { font-size: 1.15rem; }
     .ap-account { padding-top: 24px; }
     .account-shortcuts { grid-template-columns: 1fr; }
-    .woocommerce-account .woocommerce-Addresses { grid-template-columns: 1fr; }
-    .woocommerce-account .woocommerce-MyAccount-navigation ul { display: flex; flex-wrap: wrap; gap: 6px; }
-    .woocommerce-account .woocommerce-MyAccount-navigation li a { padding: 9px 14px; font-size: .9rem; }
 }
