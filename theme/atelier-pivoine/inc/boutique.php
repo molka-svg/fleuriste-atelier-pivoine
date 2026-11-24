@@ -676,3 +676,15 @@ add_filter('woocommerce_update_order_review_fragments', function ($fragments) {
     $fragments['.ap-checkout-freeship'] = ob_get_clean();
     return $fragments;
 });
+
+/* ==========================================================================
+ * Mon compte : titres des pages « Mes informations » et « Modifier l'adresse »
+ * ======================================================================== */
+add_action('woocommerce_before_edit_account_form', function () {
+    echo '<header class="account-section-head"><p class="section-eyebrow">Mon compte</p><h2>Mes <em>informations</em></h2>'
+        . '<p>Votre nom, votre e-mail et votre mot de passe.</p></header>';
+});
+
+add_filter('woocommerce_my_account_edit_address_title', function ($title, $load_address) {
+    return 'shipping' === $load_address ? 'Adresse de livraison' : 'Adresse de facturation';
+}, 10, 2);
