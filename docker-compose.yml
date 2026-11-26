@@ -1,5 +1,6 @@
 # Partie 7 : la boutique reconstruite à partir du dépôt.
-# Trois services demandés (mariadb, wordpress, wordpress:cli) + Mailpit pour voir les e-mails.
+# Trois services demandés (mariadb, wordpress, wordpress:cli) + Mailpit pour voir les e-mails
+# + un petit récepteur de webhook (bonus).
 # Les mots de passe viennent du fichier .env (jamais dans Git, voir .env.example).
 #
 #   bash scripts/restauration.sh        → http://localhost:8080
@@ -40,11 +41,12 @@ services:
       # Pas de modification du code PHP depuis l'admin (un compte volé ne peut pas y cacher un programme)
       WORDPRESS_CONFIG_EXTRA: |
         define('DISALLOW_FILE_EDIT', true);
-    volumes: &wp_volumes
+    volumes:
       - wp_data:/var/www/html
       - ./theme/atelier-pivoine:/var/www/html/wp-content/themes/atelier-pivoine
       - ./theme/atelier-pivoine-blocs:/var/www/html/wp-content/themes/atelier-pivoine-blocs
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./extensions/bandeau-livraison:/var/www/html/wp-content/plugins/bandeau-livraison
       - ./sauvegardes:/sauvegardes
 
   # Outil en ligne de commande : docker compose run --rm cli wp <commande>
@@ -59,13 +61,33 @@ services:
       <<: *wp_env
       HOME: /tmp
       WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
-    volumes: *wp_volumes
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+    volumes:
+      - wp_data:/var/www/html
+      - ./theme/atelier-pivoine:/var/www/html/wp-content/themes/atelier-pivoine
+      - ./theme/atelier-pivoine-blocs:/var/www/html/wp-content/themes/atelier-pivoine-blocs
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./extensions/bandeau-livraison:/var/www/html/wp-content/plugins/bandeau-livraison
+      - ./sauvegardes:/sauvegardes
+      - ./scripts:/scripts:ro
 
   mailpit:
     image: axllent/mailpit
     restart: unless-stopped
     ports:
       - "8025:8025"
+
+  # Bonus : reçoit le webhook « commande créée » et l'affiche sur http://localhost:8090
+  webhook:
+    image: php:8.3-cli-alpine
+    restart: unless-stopped
+    command: php -S 0.0.0.0:80 -t /app
+    environment:
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+    volumes:
+      - ./webhook:/app:ro
+    ports:
+      - "8090:80"
 
 volumes:
   db_data:

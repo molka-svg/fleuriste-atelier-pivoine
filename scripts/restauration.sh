@@ -19,8 +19,8 @@ MEDIAS="medias-$SUFFIXE.tar.gz"
 [ -f .env ] || { echo "Fichier .env absent : cp .env.example .env, puis remplir les 4 valeurs." >&2; exit 1; }
 [ -f "sauvegardes/$BASE" ] || { echo "Sauvegarde introuvable : sauvegardes/$BASE" >&2; exit 1; }
 
-echo "1/7 Démarrage de MariaDB, WordPress et Mailpit"
-$DC up -d db wordpress mailpit
+echo "1/7 Démarrage de MariaDB, WordPress, Mailpit et du récepteur de webhook"
+$DC up -d db wordpress mailpit webhook
 cli() { $DC run --rm -T cli "$@"; }
 cli sh -c 'until [ -f wp-config.php ]; do sleep 2; done'   # WordPress a fini de s'installer dans le volume
 
@@ -52,11 +52,15 @@ else
   echo "   (pas d'archive de médias : les images des produits manqueront)"
 fi
 
+echo "   Bonus : extension maison et webhook « commande créée »"
+cli wp plugin activate bandeau-livraison || true
+cli wp eval-file /scripts/webhook.php || true
+
 echo "7/7 Permaliens et caches"
 cli wp rewrite flush --hard || true
 cli wp transient delete --all || true
 cli wp cache flush || true
 
 echo
-echo "Boutique restaurée : $URL   (admin : $URL/wp-admin, e-mails : http://localhost:8025)"
-echo "Le paiement par carte n'est pas dans la sauvegarde : recoller ses clés de test Stripe dans l'admin."
+echo "Boutique restaurée : $URL   (admin : $URL/wp-admin, e-mails : http://localhost:8025, webhooks : http://localhost:8090)"
+echo "Le paiement par carte n'est pas dans la sauvegarde : lancer « bash scripts/stripe-test.sh » avec ses clés de test."
