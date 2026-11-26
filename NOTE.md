@@ -82,15 +82,15 @@ stateDiagram-v2
 | Annulée | Le marchand, ou WooCommerce après 60 min sans paiement | Stock **remis** |
 | Remboursée | Le marchand | Stock remis seulement si « Remettre en stock » est coché |
 
-**Observé sur nos commandes test** : les commandes n° 27 et n° 37, payées à la livraison, sont passées directement en « En cours », et le stock a été retiré tout de suite (le bouquet « Petit mot » est passé de 20 à 19). Le délai de 60 minutes vient du réglage « Retenir le stock » de WooCommerce.
+**Observé sur nos commandes test** : payée à la livraison, la n° 37 est passée directement « En cours » et « Petit mot » est passé de 20 à 19 en stock ; payées par virement (n° 66 à 68), les commandes restent « En attente » jusqu'à ce que le marchand confirme le virement ; payée par carte Stripe (mode test), la commande passe « En cours » dès que Stripe accepte le paiement. Les 60 minutes viennent du réglage « Retenir le stock ».
 
 ## 4. Notre arbitrage : WooCommerce ou sur-mesure ?
 *Responsable : Molka Ferchichi*
 
 **Pour Atelier Pivoine, nous choisissons WooCommerce.**
 
-1. **Délai.** En une semaine, la boutique avait un catalogue de 12 produits (dont une variation de taille et une promotion datée), un panier, une commande, des comptes clients et des e-mails. Notre propre code se limite à environ 1 100 lignes (`inc/boutique.php`, `scripts/configurer-boutique.php`, `scripts/catalogue.php`) ; tout le reste vient du CMS. Au projet précédent, le panier et la commande ont dû être écrits entièrement par nous.
-2. **Coût.** WordPress et WooCommerce sont gratuits (licence GPL) et notre boutique n'utilise **qu'une seule extension** (WooCommerce). Un hébergement mutualisé PHP + MySQL suffit. Le paiement par carte est délégué à Stripe, qui facture à la transaction : le tarif public est vérifiable sur stripe.com/fr/pricing. Avec du sur-mesure, il faudrait en plus payer le développement et la sécurisation du paiement.
-3. **Maintenance et dépendances.** Les correctifs de sécurité du cœur et de WooCommerce sont écrits par leurs équipes ; nous n'avons qu'à les appliquer, après test (à l'installation, WordPress proposait déjà 5 mises à jour). En contrepartie, nous dépendons de leurs versions : WooCommerce 11 exige WordPress 7, d'où notre version figée. En sur-mesure, toute faille (paiement, comptes, injection SQL) serait à corriger par nous.
+1. **Délai.** En une semaine : 12 produits (variations, promotion datée), panier, commande, comptes et e-mails. Notre code se limite à environ 1 600 lignes (`theme/atelier-pivoine-blocs/inc/`, `scripts/`, `mu-plugins/`) ; tout le reste vient du CMS. Au projet précédent, panier et commande étaient entièrement à écrire.
+2. **Coût.** WordPress, WooCommerce et l'extension Stripe sont gratuits (licence GPL) : **deux extensions** seulement. Un hébergement mutualisé PHP + MySQL suffit. Stripe facture à la transaction (tarif public sur stripe.com/fr/pricing) ; en sur-mesure, il faudrait en plus payer le développement et la sécurisation du paiement.
+3. **Maintenance et dépendances.** Les correctifs de sécurité sont écrits par les équipes de WordPress et WooCommerce ; nous les appliquons après test (5 mises à jour proposées dès l'installation). En contrepartie, nous dépendons de leurs versions : WooCommerce 11 et Stripe 10.8 exigent un WordPress plus récent que notre 6.8, d'où des versions figées (10.7.0 et 10.7.2).
 
-**Quand le sur-mesure deviendrait pertinent** : si Atelier Pivoine grandissait au point d'avoir besoin d'une logique très spécifique (abonnements hebdomadaires, tournées de livraison optimisées, plusieurs boutiques avec stocks partagés) ou d'une application mobile au cœur de l'activité. Les *hooks* coûteraient alors plus cher à maintenir qu'une API dédiée. À la taille d'un fleuriste de quartier, ce n'est pas le cas.
+**Quand le sur-mesure deviendrait pertinent** : abonnements hebdomadaires, tournées de livraison optimisées, plusieurs boutiques à stock partagé, ou une application mobile au cœur de l'activité ; les *hooks* coûteraient alors plus cher qu'une API dédiée. Pour un fleuriste de quartier, ce n'est pas le cas.
