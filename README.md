@@ -13,8 +13,9 @@ Il faut Docker Desktop et Git Bash (ou un terminal Linux / macOS).
 ```bash
 git clone https://github.com/molka-svg/fleuriste-atelier-pivoine
 cd fleuriste-atelier-pivoine
-cp .env.example .env          # puis remplir les 4 valeurs (mots de passe inventés)
+cp .env.example .env          # puis remplir les valeurs (mots de passe et secret inventés)
 bash scripts/restauration.sh  # importe sauvegardes/base-demo.sql + medias-demo.tar.gz
+bash scripts/stripe-test.sh   # facultatif : paiement par carte, avec ses propres clés de test Stripe
 ```
 
 | Quoi | Adresse |
@@ -22,6 +23,7 @@ bash scripts/restauration.sh  # importe sauvegardes/base-demo.sql + medias-demo.
 | Boutique | http://localhost:8080 |
 | Administration | http://localhost:8080/wp-admin (identifiants transmis à part, jamais dans Git) |
 | E-mails envoyés (Mailpit) | http://localhost:8025 |
+| Webhooks reçus (bonus) | http://localhost:8090 |
 
 Partir de zéro plutôt que d'une sauvegarde : installer WordPress sur http://localhost:8080, puis lancer dans l'ordre
 `scripts/configurer-boutique.php`, `scripts/catalogue.php` et `scripts/vendre.php`
@@ -33,12 +35,15 @@ Partir de zéro plutôt que d'une sauvegarde : installer WordPress sur http://lo
 |---|---|---|
 | — | Charte (nom, logo, couleurs, polices, vouvoiement) | [charte/CHARTE.md](charte/CHARTE.md) |
 | 1 | Note de cadrage | [NOTE.md](NOTE.md) |
-| 2 | Thème en blocs exporté | [theme/atelier-pivoine-blocs](theme/atelier-pivoine-blocs) (Apparence > Éditeur) |
+| 2 | Thème en blocs (sources) | [theme/atelier-pivoine-blocs](theme/atelier-pivoine-blocs) (Apparence > Éditeur) |
+| 2 | Thème exporté (Éditeur > Outils > Exporter) | [theme/export/atelier-pivoine-blocs.zip](theme/export/atelier-pivoine-blocs.zip) |
 | 3 | 12 bouquets, 3 catégories, variable, promo, rupture | [scripts/catalogue.php](scripts/catalogue.php) · admin > Produits |
-| 4 | TVA, livraison, paiements, code promo, pages légales, e-mails | [scripts/vendre.php](scripts/vendre.php) · [docs/A-FAIRE.md](docs/A-FAIRE.md) (Stripe) |
+| 4 | TVA, livraison, paiements, code promo, pages légales, e-mails | [scripts/vendre.php](scripts/vendre.php) · Stripe : [scripts/stripe-test.sh](scripts/stripe-test.sh) et [docs/A-FAIRE.md](docs/A-FAIRE.md) |
 | 5 | Collection Postman | [api/boutique.postman_collection.json](api/boutique.postman_collection.json) |
 | 6 | Sécurité | [.env.example](.env.example) · [mu-plugins/securite.php](mu-plugins/securite.php) · section ci-dessous |
 | 7 | Sauvegarde et restauration Docker | [scripts/sauvegarde.sh](scripts/sauvegarde.sh) · [scripts/restauration.sh](scripts/restauration.sh) · [docker-compose.yml](docker-compose.yml) |
+| Bonus | Mini-extension maison (41 lignes) | [extensions/bandeau-livraison](extensions/bandeau-livraison/bandeau-livraison.php) |
+| Bonus | Webhook « commande créée » reçu et affiché | [webhook/index.php](webhook/index.php) · [scripts/webhook.php](scripts/webhook.php) · [mu-plugins/webhooks.php](mu-plugins/webhooks.php) |
 
 ## Captures
 
@@ -65,7 +70,7 @@ Partir de zéro plutôt que d'une sauvegarde : installer WordPress sur http://lo
 
 - **TVA** : prix saisis et affichés TTC. Taux normal 20 % et taux réduit 10 % (classe « Taux réduit fleurs ») appliqué aux bouquets : les fleurs coupées non transformées relèvent du taux de 10 % en France.
 - **Livraison** : zone Paris (coursier 8,90 €, offert dès 60 €) et zone France (standard 48 h à 6,90 €, express 24 h à 12,90 €, standard offerte dès 60 €), retrait gratuit à l'atelier partout.
-- **Paiements de test** : virement bancaire (RIB fictif) et carte bancaire Stripe en mode test (carte `4242 4242 4242 4242`). Les clés Stripe ne sont ni dans Git ni dans la sauvegarde de démonstration.
+- **Paiements de test** : virement bancaire (RIB fictif, commande « En attente ») et carte bancaire Stripe en mode test (carte `4242 4242 4242 4242`, commande « En cours » dès que Stripe accepte). Les clés sont saisies avec `scripts/stripe-test.sh`, qui les envoie directement dans la base : elles ne sont ni dans Git ni dans la sauvegarde de démonstration.
 - **Code promo** `BIENVENUE10` : −10 %, dès 40 € d'achat, jusqu'au 31/12/2026, une fois par client, non cumulable.
 - **Pages légales** : Mentions légales, Conditions générales de vente, Politique de confidentialité ; case « J'ai lu et j'accepte les conditions générales de vente » obligatoire au moment de la commande.
 - **E-mails** : couleurs et logo de la charte, reçus dans Mailpit (`mu-plugins/mailpit.php` envoie les e-mails de WordPress vers Mailpit).
@@ -106,11 +111,19 @@ Vérification : `git grep -nE "ck_|cs_|password|DB_PASSWORD"` ne renvoie que des
 
 Les fichiers partent **sur un autre support que le disque du site** : un stockage objet (Backblaze B2, Scaleway, S3) via `rclone`, avec une règle de conservation (30 jours, puis une par mois). Si le serveur brûle ou est piraté, la sauvegarde reste intacte. Une sauvegarde n'est valable qu'une fois restaurée : on rejoue `restauration.sh` chaque mois sur une machine de test.
 
-**UpdraftPlus**, installé et lancé sur notre site local : en plus de notre script, il planifie les sauvegardes depuis l'admin sans toucher au serveur, les envoie directement vers un stockage distant (Google Drive, Dropbox, S3) et restaure en un clic depuis l'admin. En moins : il vit **dans** WordPress. Si le site ne démarre plus (base corrompue, extension cassée, serveur perdu), on ne peut plus ouvrir l'admin pour restaurer. Notre script, lui, ne dépend que de Docker et de la ligne de commande. Il ne sauvegarde pas non plus la configuration du serveur, et la version gratuite n'offre ni migration ni sauvegarde incrémentale.
+**UpdraftPlus 1.26**, installé et lancé sur notre boutique le 26/11/2026 : une sauvegarde complète en 19 secondes, découpée en 6 archives (base 0,2 Mo, extensions 28 Mo, thèmes 21 Mo, médias 7 Mo, mu-plugins, autres), soit environ 60 Mo contre 7,5 Mo pour notre script, qui ne garde que la base et les médias puisque le reste se réinstalle depuis Git. Sans stockage distant configuré, UpdraftPlus a tout rangé dans `wp-content/updraft`, **sur le même disque que le site** : exactement ce qu'il faut éviter. En plus de notre script, il planifie les sauvegardes depuis l'admin sans toucher au serveur, les envoie directement vers un stockage distant (Google Drive, Dropbox, S3) et restaure en un clic depuis l'admin. En moins : il vit **dans** WordPress. Si le site ne démarre plus (base corrompue, extension cassée, serveur perdu), on ne peut plus ouvrir l'admin pour restaurer. Notre script, lui, ne dépend que de Docker et de la ligne de commande. Il ne sauvegarde pas non plus la configuration du serveur, et la version gratuite n'offre ni migration ni sauvegarde incrémentale.
 
 ## Déploiement chez un hébergeur cPanel
 
 Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **cPanel > Bases de données MySQL**, on crée une base, un utilisateur et un mot de passe. Dans **phpMyAdmin**, on importe `base-demo.sql`. Avec le **gestionnaire de fichiers** ou en **SFTP** (FileZilla), on envoie WordPress, `wp-content/themes/atelier-pivoine-blocs`, `wp-content/mu-plugins` et le contenu de `medias-demo.tar.gz` dans `wp-content/uploads`, puis on installe WooCommerce. On renseigne `wp-config.php` (nom de la base, utilisateur, mot de passe, hôte, clés de salage neuves) : c'est l'équivalent de notre `.env`. On change l'adresse avec `wp search-replace` si l'hébergeur fournit WP-CLI en SSH, sinon avec l'extension Better Search Replace, jamais dans le fichier SQL. Enfin, on active le **certificat HTTPS** gratuit (AutoSSL / Let's Encrypt) dans cPanel et on force le HTTPS. **Quand choisir quoi** : cPanel pour un petit commerce sans développeur, pour quelques euros par mois, avec sauvegardes et certificat gérés par l'hébergeur, mais tout se fait à la main et se rejoue mal. Docker quand on veut un environnement identique partout (poste, test, production), une restauration scriptée et testable, et une équipe capable de maintenir un serveur (VPS).
+
+## Bonus réalisés
+
+**Mini-extension maison** : [extensions/bandeau-livraison/bandeau-livraison.php](extensions/bandeau-livraison/bandeau-livraison.php), 41 lignes, activée dans Extensions. Un bandeau vert en haut de chaque page annonce « Livraison offerte dès 60 € », puis « Plus que 15,00 € pour la livraison offerte » quand le panier n'y est pas encore, et « La livraison vous est offerte ! » au-delà. Le seuil se change sans toucher au code (filtre `bandeau_livraison_seuil`) et les couleurs viennent des Styles du thème.
+
+**Webhook « commande créée »** : WooCommerce envoie chaque nouvelle commande, signée, au petit service `webhook` du `docker-compose.yml` ([webhook/index.php](webhook/index.php), PHP sans framework), qui vérifie la signature `X-WC-Webhook-Signature` (HMAC-SHA256 avec le secret `WEBHOOK_SECRET` du `.env`) et affiche les commandes reçues sur http://localhost:8090. Le webhook est créé par `scripts/webhook.php`, lancé automatiquement par `restauration.sh`. Deux réglages ont été nécessaires dans Docker ([mu-plugins/webhooks.php](mu-plugins/webhooks.php)) : livrer tout de suite (WordPress ne peut pas s'appeler lui-même sur localhost:8080 pour vider sa file d'attente) et autoriser l'adresse interne `webhook`. Le secret n'est jamais dans Git : `sauvegarde.sh demo` exporte la table des webhooks sans ses lignes.
+
+![Webhooks reçus sur http://localhost:8090](docs/captures/08-webhooks.png)
 
 ## Qui a fait quoi
 
