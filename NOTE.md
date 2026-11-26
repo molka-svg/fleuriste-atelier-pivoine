@@ -3,7 +3,7 @@
 > Fleuriste de quartier fictif, Paris 11e. WordPress 6.8 + WooCommerce 10.7, lancé avec Docker.
 
 ## 1. Ce que le CMS fait à notre place (Strapi + Flutter → WordPress + WooCommerce)
-*Responsable : Molka Ferchichi*
+*Responsable : Molka FERCHICHI*
 
 | Besoin | Avant (Strapi + Flutter) | Maintenant (WordPress + WooCommerce) |
 |---|---|---|
@@ -22,7 +22,7 @@
 2. **Un modèle générique, pas un modèle métier.** Les besoins d'un fleuriste (date de livraison, créneau, message sur la carte, retrait à l'atelier) n'existent pas : il a fallu les ajouter en PHP par des *hooks* (`inc/boutique.php`, environ 680 lignes). Les produits sont stockés en clé/valeur (`wp_postmeta`), ce qui oblige WooCommerce à maintenir des tables de recherche (`wp_wc_product_meta_lookup`) pour rester rapide.
 
 ## 2. Le modèle de données
-*Responsable : Molka Ferchichi*
+*Responsable : Molka FERCHICHI*
 
 ```mermaid
 erDiagram
@@ -56,7 +56,7 @@ erDiagram
 | Code promo | `wp_posts` (type `shop_coupon`) + `wp_postmeta` (montant, minimum, expiration) |
 
 ## 3. Le cycle de vie d'une commande
-*Responsable : Molka Ferchichi*
+*Responsable : Molka FERCHICHI*
 
 ```mermaid
 stateDiagram-v2
@@ -85,7 +85,7 @@ stateDiagram-v2
 **Observé sur nos commandes test** : payée à la livraison, la n° 37 est passée directement « En cours » et « Petit mot » est passé de 20 à 19 en stock ; payées par virement (n° 66 à 68), les commandes restent « En attente » jusqu'à ce que le marchand confirme le virement ; payée par carte Stripe (mode test), la commande passe « En cours » dès que Stripe accepte le paiement. Les 60 minutes viennent du réglage « Retenir le stock ».
 
 ## 4. Notre arbitrage : WooCommerce ou sur-mesure ?
-*Responsable : Molka Ferchichi*
+*Responsable : Molka FERCHICHI*
 
 **Pour Atelier Pivoine, nous choisissons WooCommerce.**
 

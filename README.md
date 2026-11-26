@@ -3,7 +3,7 @@
 ![Logo](charte/logo.svg)
 
 Fleuriste de quartier fictif, Paris 11e. WordPress 6.8 + WooCommerce 10.7, thème en blocs enfant de Twenty Twenty-Five.
-Équipe : Molka Ferchichi, Marietou, Prénom C, Prénom D.
+Équipe : Molka FERCHICHI et Marietou DIALLO.
 Commerce, noms, adresses et e-mails **fictifs** : aucune donnée personnelle réelle.
 
 ## Relancer la boutique (5 minutes)
@@ -130,17 +130,17 @@ Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **c
 
 | Partie du sujet | Responsable | Contributions |
 |---|---|---|
-| Charte | Molka Ferchichi | Charte graphique, logo |
-| 1 · Note de cadrage | Molka Ferchichi | Les 4 parties de `NOTE.md`, schéma du modèle de données, cycle de vie observé sur nos commandes |
-| 2 · Design en blocs | Molka Ferchichi · Marietou | Molka : thème en blocs, Styles, en-tête, pied de page, accueil, fiche produit, boutique, Mon compte, export, captures. Marietou : premier thème classique et design de l'atelier |
-| 3 · Catalogue | Molka Ferchichi | 12 bouquets, galeries, produit variable, promotion, stock |
-| 4 · Vendre | Marietou · Molka Ferchichi | Marietou : TVA, livraison, virement, pages légales, e-mails. Molka : panier, commande en 3 étapes, code promo, carte Stripe en mode test |
-| 5 · API | Molka Ferchichi | Collection Postman (5 requêtes, 14 tests), explication des en-têtes |
-| 6 · Git et sécurité | Molka Ferchichi | Dépôt sans secret, 5 mesures dont 3 en place (`mu-plugins/securite.php`) |
-| 7 · Déployer | Molka Ferchichi · Marietou | Molka : `docker-compose.yml` MariaDB, scripts de sauvegarde et de restauration, sauvegarde de démonstration, UpdraftPlus, cron, cPanel. Marietou : premier Docker, restauration rejouée sur sa machine |
-| Bonus | Molka Ferchichi | Mini-extension « livraison offerte », webhook signé |
+| Charte | Molka FERCHICHI | Charte graphique, logo |
+| 1 · Note de cadrage | Molka FERCHICHI | Les 4 parties de `NOTE.md`, schéma du modèle de données, cycle de vie observé sur nos commandes |
+| 2 · Design en blocs | Molka FERCHICHI · Marietou DIALLO | Molka : thème en blocs, Styles, en-tête, pied de page, accueil, fiche produit, boutique, Mon compte, export, captures. Marietou : premier thème classique et design de l'atelier |
+| 3 · Catalogue | Molka FERCHICHI | 12 bouquets, galeries, produit variable, promotion, stock |
+| 4 · Vendre | Marietou DIALLO · Molka FERCHICHI | Marietou : TVA, livraison, virement, pages légales, e-mails. Molka : panier, commande en 3 étapes, code promo, carte Stripe en mode test |
+| 5 · API | Molka FERCHICHI | Collection Postman (5 requêtes, 14 tests), explication des en-têtes |
+| 6 · Git et sécurité | Molka FERCHICHI | Dépôt sans secret, 5 mesures dont 3 en place (`mu-plugins/securite.php`) |
+| 7 · Déployer | Molka FERCHICHI · Marietou DIALLO | Molka : `docker-compose.yml` MariaDB, scripts de sauvegarde et de restauration, sauvegarde de démonstration, UpdraftPlus, cron, cPanel. Marietou : premier Docker, restauration rejouée sur sa machine |
+| Bonus | Molka FERCHICHI | Mini-extension « livraison offerte », webhook signé |
 
-**Molka Ferchichi**
+**Molka FERCHICHI**
 - **Panier** : boutons − / +, barre « livraison offerte dès 60 € », bouton « Continuer mes achats », panier vide soigné, code promo et bloc total aux couleurs de la charte, vue téléphone.
 - **Commande** : formulaire en 3 étapes (coordonnées, livraison ou retrait, bouquet), cartes livraison / retrait, créneau en boutons, récapitulatif avec photos ; paiement par carte Stripe en mode test (`scripts/stripe-test.sh`, clés jamais écrites dans un fichier).
 - **Thème en blocs** `theme/atelier-pivoine-blocs` (enfant de Twenty Twenty-Five) : couleurs et polices dans Styles, en-tête et pied de page en éléments de modèle, accueil en blocs, fiche produit et boutique retouchées, page Mon compte, export depuis l'éditeur.
@@ -151,7 +151,7 @@ Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **c
 - **Déploiement** : `docker-compose.yml` (MariaDB, WordPress, WP-CLI), `scripts/sauvegarde.sh` (retire les clés de paiement et le secret du webhook de la sauvegarde de démonstration), `scripts/restauration.sh` (boutique reconstruite en moins de 2 minutes), UpdraftPlus.
 - **Bonus** : mini-extension `extensions/bandeau-livraison` et webhook « commande créée » signé et affiché.
 
-**Marietou**
+**Marietou DIALLO**
 - Thème `theme/atelier-pivoine`, panier latéral, connexion et compte client ; design de l'atelier porté dans le thème en blocs.
 - Docker, script `scripts/configurer-boutique.php`, maquette cliquable du parcours client.
 - Partie 4 `scripts/vendre.php` : TVA, zones de livraison, virement, pages légales, e-mails et Mailpit.
