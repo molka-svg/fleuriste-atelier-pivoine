@@ -53,10 +53,12 @@ Contrastes calculés selon les règles d'accessibilité WCAG :
 
 | | Police | Rôle | Réglages |
 |---|---|---|---|
-| **La plume** | **Fraunces** (serif) | Titres, nom des produits, prix | Graisse 500–600, titres de page 40–48 px, titres de section 28–32 px |
-| **Le crayon** | **Inter** (sans serif) | Texte courant, menus, boutons, formulaires | 17–18 px, interligne 1,6, graisse 400 (600 pour les boutons) |
+| **La plume** | **DM Serif Display** (serif) | Titres, nom des produits, prix | Graisse 400 (la seule de la famille), titres de page 40–48 px, titres de section 28–32 px, italique pour un mot mis en valeur |
+| **Le crayon** | **DM Sans** (sans serif) | Texte courant, menus, boutons, formulaires | 17–18 px, interligne 1,6, graisse 400 (600 pour les boutons) |
 
-Fraunces a les courbes d'une étiquette calligraphiée à la main : elle donne le côté **artisan**. Inter est très lisible sur un petit écran : elle donne le côté **pratique** (Léa achète depuis son téléphone).
+DM Serif Display a les pleins et déliés d'une étiquette calligraphiée : elle donne le côté **artisan**. DM Sans, dessinée pour aller avec, est très lisible sur un petit écran : elle donne le côté **pratique** (Léa achète depuis son téléphone).
+
+*Évolution (22/11/2026) : Fraunces et Inter, prévues au départ, ont été remplacées par la paire DM Serif Display / DM Sans au moment du thème en blocs : deux polices de la même famille, plus légères à charger, et un italique plus élégant pour les accroches (« Une émotion. »). Elles sont réglées une seule fois dans les Styles (theme.json).*
 
 **Règles :** deux polices, jamais une troisième. Pas de texte en majuscules, sauf les petites étiquettes espacées (ex. `FLEURISTE · PARIS 11e`). Pas d'italique sur plus d'une phrase.
 
@@ -120,7 +122,7 @@ On parle comme Camille derrière son comptoir : **on vouvoie, on est chaleureux,
 | **Bouton secondaire** | Contour Feuillage 2 px, texte Feuillage, fond transparent |
 | **En-tête** | Fond Feuillage, logo + menu + mini-panier en Papier |
 | **Pied de page** | Fond Feuillage, texte Papier, liens légaux bien visibles |
-| **Cartes produit** | Fond Papier, photo carrée, nom en Fraunces, prix en Encre (Pivoine si promo) |
+| **Cartes produit** | Fond Papier, photo carrée, nom en DM Serif Display, prix en Encre (Pivoine si promo) |
 | **Icônes de réassurance** | Trait fin, une seule couleur (Feuillage) : vélo · cadenas · feuille |
 | **Bandeau promo** | Fond Pétale, texte Encre |
 
@@ -143,7 +145,7 @@ Le site change de bouquet comme la vitrine. La **bannière d'accueil** et la **b
 
 | Persona | Ce qu'il voit dans la charte |
 |---|---|
-| **Léa**, 29 ans, achète sur son téléphone | Inter lisible, bouton Pivoine visible sans défiler |
+| **Léa**, 29 ans, achète sur son téléphone | DM Sans lisible, bouton Pivoine visible sans défiler |
 | **Karim**, 41 ans, restaurateur | Ton sérieux et clair, paiement par virement mis en avant |
 | **Hélène**, 67 ans | Texte 17–18 px, contraste 15 : 1, téléphone et adresse dans le pied de page |
 | **Thomas**, 34 ans, offre à distance | Promesse « livré le jour même » et ton chaleureux qui rassure |
@@ -162,7 +164,7 @@ Tout se règle **une seule fois** dans **Apparence > Éditeur > Styles**, jamais
 | Accent 2 | `#D9677C` Pivoine |
 | Boutons | Fond Accent 2, texte blanc |
 | Titres / liens | Accent 1 |
-| Polices | Titres Fraunces · Texte Inter 17–18 px |
+| Polices | Titres DM Serif Display · Texte DM Sans 17–18 px |
 
 E-mails WooCommerce : couleur de base `#2F4A3A`, fond `#FBF6EF`, texte `#1F1F1F`, logo PNG en en-tête.
 
