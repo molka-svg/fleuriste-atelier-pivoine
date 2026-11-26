@@ -165,9 +165,3 @@ Photos libres de droits (Unsplash et Pexels), recadrées au même format :
 - photos du thème : [theme/atelier-pivoine-blocs/images/CREDITS.md](theme/atelier-pivoine-blocs/images/CREDITS.md) et [theme/atelier-pivoine/images/CREDITS.md](theme/atelier-pivoine/images/CREDITS.md) ;
 - photos des 12 bouquets et des galeries : [theme/atelier-pivoine-blocs/images/CREDITS.md](theme/atelier-pivoine-blocs/images/CREDITS.md).
 
-## Ce que nous ferions autrement
-
-- **Partir du thème en blocs dès le premier jour.** Nous avons d'abord construit un thème classique en PHP, puis tout reporté dans le thème en blocs : deux fois le même travail.
-- **Mettre les réglages dans des scripts dès le début.** Langue, code promo et TVA ont d'abord été réglés à la main dans l'admin de chacun ; tant qu'ils n'étaient pas dans `scripts/` ou dans une sauvegarde, nos boutiques locales n'étaient pas identiques.
-- **Choisir la base de production (MariaDB) dès le départ.** Passer de MySQL 8.4 à MariaDB pour la restauration a demandé un export depuis le conteneur MySQL : le client MariaDB ne gère pas l'authentification par défaut de MySQL 8.4.
-- **Garder les fonctions métier dans une petite extension** plutôt que dans le thème : la date, le créneau et le message sur la carte disparaissent aujourd'hui si on change de thème.
