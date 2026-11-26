@@ -24,6 +24,7 @@ Thumbs.db
 
 # Le index.php du thème est indispensable : exception à la règle « index.php » ci-dessus
 !theme/atelier-pivoine/index.php
+!webhook/index.php
 
 # Fichiers de travail locaux, à ne pas partager
 sauvegardes/*
