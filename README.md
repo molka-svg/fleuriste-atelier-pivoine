@@ -132,12 +132,12 @@ Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **c
 |---|---|---|
 | Charte | Molka FERCHICHI | Charte graphique, logo |
 | 1 · Note de cadrage | Molka FERCHICHI | Les 4 parties de `NOTE.md`, schéma du modèle de données, cycle de vie observé sur nos commandes |
-| 2 · Design en blocs | Molka FERCHICHI · Marietou DIALLO | Molka : thème en blocs, Styles, en-tête, pied de page, accueil, fiche produit, boutique, Mon compte, export, captures. Marietou : premier thème classique et design de l'atelier |
+| 2 · Design en blocs | Molka FERCHICHI · Marietou DIALLO | Molka : thème en blocs, Styles, en-tête, pied de page, accueil, fiche produit, boutique, Mon compte, export, captures. Marietou : premier thème classique, design de l'atelier repris dans le thème en blocs (accueil, boutique, page L'atelier, Mon compte, animations) |
 | 3 · Catalogue | Molka FERCHICHI | 12 bouquets, galeries, produit variable, promotion, stock |
-| 4 · Vendre | Marietou DIALLO · Molka FERCHICHI | Marietou : TVA, livraison, virement, pages légales, e-mails. Molka : panier, commande en 3 étapes, code promo, carte Stripe en mode test |
+| 4 · Vendre | Marietou DIALLO · Molka FERCHICHI | Marietou : TVA, zones de livraison, retrait hors Paris, virement, pages légales, e-mails. Molka : panier, commande en 3 étapes, code promo, carte Stripe en mode test |
 | 5 · API | Molka FERCHICHI | Collection Postman (5 requêtes, 14 tests), explication des en-têtes |
 | 6 · Git et sécurité | Molka FERCHICHI | Dépôt sans secret, 5 mesures dont 3 en place (`mu-plugins/securite.php`) |
-| 7 · Déployer | Molka FERCHICHI · Marietou DIALLO | Molka : `docker-compose.yml` MariaDB, scripts de sauvegarde et de restauration, sauvegarde de démonstration, UpdraftPlus, cron, cPanel. Marietou : premier Docker, restauration rejouée sur sa machine |
+| 7 · Déployer | Molka FERCHICHI · Marietou DIALLO | Molka : `docker-compose.yml` MariaDB, scripts de sauvegarde et de restauration, sauvegarde de démonstration, UpdraftPlus, cron, cPanel. Marietou : premier Docker (MySQL, Mailpit), configuration de base de la boutique, restauration rejouée sur sa machine |
 | Bonus | Molka FERCHICHI | Mini-extension « livraison offerte », webhook signé |
 
 **Molka FERCHICHI**
@@ -152,9 +152,11 @@ Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **c
 - **Bonus** : mini-extension `extensions/bandeau-livraison` et webhook « commande créée » signé et affiché.
 
 **Marietou DIALLO**
-- Thème `theme/atelier-pivoine`, panier latéral, connexion et compte client ; design de l'atelier porté dans le thème en blocs.
-- Docker, script `scripts/configurer-boutique.php`, maquette cliquable du parcours client.
-- Partie 4 `scripts/vendre.php` : TVA, zones de livraison, virement, pages légales, e-mails et Mailpit.
+- **Premier thème** `theme/atelier-pivoine` (PHP classique) : accueil, boutique avec filtres et tri, panier latéral, connexion et inscription, commande avec date, créneau et message sur la carte, Mon compte, page L'atelier, animations.
+- **Thème en blocs** : reprise de ce design (accueil, en-tête, boutique avec onglets des catégories, page L'atelier, Mon compte, animations).
+- **Configuration** : premier Docker (`compose.yaml`, MySQL, Mailpit), `scripts/configurer-boutique.php` (pages, premiers bouquets, livraison à Paris, paiement de test), correction du retrait à l'atelier hors de Paris.
+- **Vendre** : `scripts/vendre.php` (TVA, zones de livraison, virement, pages légales, case de consentement, e-mails) et envoi des e-mails vers Mailpit.
+- **Maquette** cliquable du parcours client (`maquettes/`).
 - Restauration rejouée sur sa machine à partir du dépôt.
 
 ## Sources des images
