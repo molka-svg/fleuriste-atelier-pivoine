@@ -1,4 +1,4 @@
-# Paiement par carte en mode test (Stripe)
+# Paiement par carte bancaire en mode test (Stripe)
 
 Demandé dans la partie 4 du sujet : « carte bancaire par un prestataire en mode bac à sable ».
 Gratuit : en mode test, aucun argent ne circule.

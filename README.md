@@ -37,8 +37,9 @@ Partir de zéro plutôt que d'une sauvegarde : installer WordPress sur http://lo
 | 1 | Note de cadrage | [NOTE.md](NOTE.md) |
 | 2 | Thème en blocs (sources) | [theme/atelier-pivoine-blocs](theme/atelier-pivoine-blocs) (Apparence > Éditeur) |
 | 2 | Thème exporté (Éditeur > Outils > Exporter) | [theme/export/atelier-pivoine-blocs.zip](theme/export/atelier-pivoine-blocs.zip) |
+| — | Première version (thème classique PHP, avant le passage aux blocs) | [theme/atelier-pivoine](theme/atelier-pivoine) : conservé pour l'historique, **non activé** |
 | 3 | 12 bouquets, 3 catégories, variable, promo, rupture | [scripts/catalogue.php](scripts/catalogue.php) · admin > Produits |
-| 4 | TVA, livraison, paiements, code promo, pages légales, e-mails | [scripts/vendre.php](scripts/vendre.php) · Stripe : [scripts/stripe-test.sh](scripts/stripe-test.sh) et [docs/A-FAIRE.md](docs/A-FAIRE.md) |
+| 4 | TVA, livraison, paiements, code promo, pages légales, e-mails | [scripts/vendre.php](scripts/vendre.php) · Stripe : [scripts/stripe-test.sh](scripts/stripe-test.sh) et [docs/paiement-carte-stripe.md](docs/paiement-carte-stripe.md) |
 | 5 | Collection Postman | [api/boutique.postman_collection.json](api/boutique.postman_collection.json) |
 | 6 | Sécurité | [.env.example](.env.example) · [mu-plugins/securite.php](mu-plugins/securite.php) · section ci-dessous |
 | 7 | Sauvegarde et restauration Docker | [scripts/sauvegarde.sh](scripts/sauvegarde.sh) · [scripts/restauration.sh](scripts/restauration.sh) · [docker-compose.yml](docker-compose.yml) |
@@ -127,14 +128,28 @@ Chez un hébergeur mutualisé, on refait les mêmes étapes à la main. Dans **c
 
 ## Qui a fait quoi
 
+| Partie du sujet | Responsable | Contributions |
+|---|---|---|
+| Charte | Molka Ferchichi | Charte graphique, logo |
+| 1 · Note de cadrage | Molka Ferchichi | Les 4 parties de `NOTE.md`, schéma du modèle de données, cycle de vie observé sur nos commandes |
+| 2 · Design en blocs | Molka Ferchichi · Marietou | Molka : thème en blocs, Styles, en-tête, pied de page, accueil, fiche produit, boutique, Mon compte, export, captures. Marietou : premier thème classique et design de l'atelier |
+| 3 · Catalogue | Molka Ferchichi | 12 bouquets, galeries, produit variable, promotion, stock |
+| 4 · Vendre | Marietou · Molka Ferchichi | Marietou : TVA, livraison, virement, pages légales, e-mails. Molka : panier, commande en 3 étapes, code promo, carte Stripe en mode test |
+| 5 · API | Molka Ferchichi | Collection Postman (5 requêtes, 14 tests), explication des en-têtes |
+| 6 · Git et sécurité | Molka Ferchichi | Dépôt sans secret, 5 mesures dont 3 en place (`mu-plugins/securite.php`) |
+| 7 · Déployer | Molka Ferchichi · Marietou | Molka : `docker-compose.yml` MariaDB, scripts de sauvegarde et de restauration, sauvegarde de démonstration, UpdraftPlus, cron, cPanel. Marietou : premier Docker, restauration rejouée sur sa machine |
+| Bonus | Molka Ferchichi | Mini-extension « livraison offerte », webhook signé |
+
 **Molka Ferchichi**
-- Panier détaillé : boutons − / +, barre « livraison offerte dès 60 € », bouton « Continuer mes achats », panier vide, vue téléphone, code promo et bloc total stylisés.
-- Commande : formulaire en 3 étapes (coordonnées, livraison ou retrait, bouquet), cartes livraison / retrait, créneau en boutons, récapitulatif avec photos.
-- Thème en blocs `theme/atelier-pivoine-blocs` (enfant de Twenty Twenty-Five) : couleurs et polices dans Styles, en-tête, pied de page, accueil en blocs, fiche produit et boutique retouchées, page Mon compte.
-- Catalogue `scripts/catalogue.php` : 12 bouquets, 3 catégories, un bouquet en 3 tailles, une promotion datée, une rupture, UGS, galeries, photos Pexels recadrées.
-- Code promo BIENVENUE10 (-10 % dès 40 €), boutique en français.
-- Captures du README et note de cadrage `NOTE.md`.
-- Collection Postman, sauvegarde et restauration Docker (MariaDB), mesures de sécurité, README final.
+- **Panier** : boutons − / +, barre « livraison offerte dès 60 € », bouton « Continuer mes achats », panier vide soigné, code promo et bloc total aux couleurs de la charte, vue téléphone.
+- **Commande** : formulaire en 3 étapes (coordonnées, livraison ou retrait, bouquet), cartes livraison / retrait, créneau en boutons, récapitulatif avec photos ; paiement par carte Stripe en mode test (`scripts/stripe-test.sh`, clés jamais écrites dans un fichier).
+- **Thème en blocs** `theme/atelier-pivoine-blocs` (enfant de Twenty Twenty-Five) : couleurs et polices dans Styles, en-tête et pied de page en éléments de modèle, accueil en blocs, fiche produit et boutique retouchées, page Mon compte, export depuis l'éditeur.
+- **Catalogue** `scripts/catalogue.php` : 12 bouquets, 3 catégories, un bouquet en 3 tailles, une promotion datée, une rupture, UGS, galeries, photos Pexels recadrées au même format ; code promo BIENVENUE10 ; boutique en français.
+- **Note de cadrage** `NOTE.md` (les 4 parties) et **README** avec les 8 captures.
+- **API** : collection Postman `api/boutique.postman_collection.json`, 5 requêtes et 14 tests automatiques.
+- **Sécurité** : dépôt sans secret, `.env.example`, liste des utilisateurs masquée, XML-RPC coupé, édition du code désactivée.
+- **Déploiement** : `docker-compose.yml` (MariaDB, WordPress, WP-CLI), `scripts/sauvegarde.sh` (retire les clés de paiement et le secret du webhook de la sauvegarde de démonstration), `scripts/restauration.sh` (boutique reconstruite en moins de 2 minutes), UpdraftPlus.
+- **Bonus** : mini-extension `extensions/bandeau-livraison` et webhook « commande créée » signé et affiché.
 
 **Marietou**
 - Thème `theme/atelier-pivoine`, panier latéral, connexion et compte client ; design de l'atelier porté dans le thème en blocs.
