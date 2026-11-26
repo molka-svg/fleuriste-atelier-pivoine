@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Atelier Pivoine — Store API",
+    "description": "Partie 5 du sujet : parcours d'achat par l'API WooCommerce. Lancer les 5 requêtes dans l'ordre (Run collection). baseUrl = adresse de la boutique.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "cartToken", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Produits (GET /products)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+          "const produits = pm.response.json();",
+          "pm.test('Au moins 12 bouquets', () => pm.expect(produits.length).to.be.at.least(12));",
+          "pm.test('Prix en centimes (currency_minor_unit = 2)', () => {",
+          "  pm.expect(produits[0].prices.currency_minor_unit).to.eql(2);",
+          "  pm.expect(produits[0].prices.price).to.match(/^\\d+$/);",
+          "});",
+          "const achetable = produits.find(p => p.type === 'simple' && p.is_in_stock && p.is_purchasable);",
+          "pm.collectionVariables.set('productId', achetable.id);"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/wp-json/wc/store/v1/products?per_page=20", "host": ["{{baseUrl}}"], "path": ["wp-json", "wc", "store", "v1", "products"], "query": [{ "key": "per_page", "value": "20" }] }
+      }
+    },
+    {
+      "name": "2. Panier (GET /cart)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+          "pm.test('En-tête Cart-Token présent', () => pm.response.to.have.header('Cart-Token'));",
+          "pm.collectionVariables.set('cartToken', pm.response.headers.get('Cart-Token'));"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/wp-json/wc/store/v1/cart", "host": ["{{baseUrl}}"], "path": ["wp-json", "wc", "store", "v1", "cart"] }
+      }
+    },
+    {
+      "name": "3. Ajouter au panier (POST /cart/add-item)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 201', () => pm.response.to.have.status(201));",
+          "pm.test('Le jeton envoyé dans la requête est bien Cart-Token', () => pm.expect(pm.request.headers.get('Cart-Token')).to.eql(pm.collectionVariables.get('cartToken')));",
+          "pm.test('Le jeton est renvoyé dans la réponse', () => pm.response.to.have.header('Cart-Token'));",
+          "pm.test('Le bouquet est dans le panier', () => pm.expect(pm.response.json().items_count).to.be.at.least(1));"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cart-Token", "value": "{{cartToken}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": {{productId}},\n  \"quantity\": 2\n}" },
+        "url": { "raw": "{{baseUrl}}/wp-json/wc/store/v1/cart/add-item", "host": ["{{baseUrl}}"], "path": ["wp-json", "wc", "store", "v1", "cart", "add-item"] }
+      }
+    },
+    {
+      "name": "4. Commander (POST /checkout)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 200', () => pm.response.to.have.status(200));",
+          "const commande = pm.response.json();",
+          "pm.test('Commande créée avec un numéro', () => pm.expect(commande.order_id).to.be.above(0));",
+          "pm.test('Virement : commande « En attente » (on-hold)', () => pm.expect(commande.status).to.eql('on-hold'));",
+          "pm.collectionVariables.set('orderId', commande.order_id);",
+          "console.log('Voir la commande dans WooCommerce > Commandes : n°' + commande.order_id);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cart-Token", "value": "{{cartToken}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"billing_address\": {\n    \"first_name\": \"Léa\", \"last_name\": \"Martin\",\n    \"address_1\": \"12 rue Oberkampf\", \"city\": \"Paris\", \"postcode\": \"75011\", \"country\": \"FR\",\n    \"email\": \"lea.martin@atelier-pivoine.test\", \"phone\": \"0100000000\"\n  },\n  \"shipping_address\": {\n    \"first_name\": \"Léa\", \"last_name\": \"Martin\",\n    \"address_1\": \"12 rue Oberkampf\", \"city\": \"Paris\", \"postcode\": \"75011\", \"country\": \"FR\"\n  },\n  \"payment_method\": \"bacs\"\n}" },
+        "url": { "raw": "{{baseUrl}}/wp-json/wc/store/v1/checkout", "host": ["{{baseUrl}}"], "path": ["wp-json", "wc", "store", "v1", "checkout"] }
+      }
+    },
+    {
+      "name": "5. Commandes sans clé (GET /wc/v3/orders)",
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('Statut 401 : refusé sans clé API', () => pm.response.to.have.status(401));",
+          "pm.test('Aucune donnée client renvoyée', () => pm.expect(pm.response.json().code).to.eql('woocommerce_rest_cannot_view'));"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/wp-json/wc/v3/orders", "host": ["{{baseUrl}}"], "path": ["wp-json", "wc", "v3", "orders"] }
+      }
+    }
+  ]
+}
