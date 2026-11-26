@@ -499,6 +499,8 @@ input[type="checkbox"] { accent-color: var(--green); width: 18px; height: 18px; 
 /* Commande */
 .woocommerce-checkout form.checkout {
     display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 0 32px; align-items: start;
+    /* Titre et récapitulatif collés : la hauteur du formulaire de gauche va dans la 3e ligne, pas sous le titre */
+    grid-template-rows: auto auto 1fr;
 }
 .woocommerce-checkout form.checkout > .woocommerce-NoticeGroup { grid-column: 1 / -1; }
 .woocommerce-checkout #customer_details { grid-column: 1; grid-row: 1 / span 3; display: grid; gap: 20px; }
