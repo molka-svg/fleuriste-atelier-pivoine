@@ -1,0 +1,72 @@
+# Partie 7 : la boutique reconstruite à partir du dépôt.
+# Trois services demandés (mariadb, wordpress, wordpress:cli) + Mailpit pour voir les e-mails.
+# Les mots de passe viennent du fichier .env (jamais dans Git, voir .env.example).
+#
+#   bash scripts/restauration.sh        → http://localhost:8080
+name: atelier-pivoine
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  wordpress:
+    image: wordpress:6.8-php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment: &wp_env
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      # Pas de modification du code PHP depuis l'admin (un compte volé ne peut pas y cacher un programme)
+      WORDPRESS_CONFIG_EXTRA: |
+        define('DISALLOW_FILE_EDIT', true);
+    volumes: &wp_volumes
+      - wp_data:/var/www/html
+      - ./theme/atelier-pivoine:/var/www/html/wp-content/themes/atelier-pivoine
+      - ./theme/atelier-pivoine-blocs:/var/www/html/wp-content/themes/atelier-pivoine-blocs
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./sauvegardes:/sauvegardes
+
+  # Outil en ligne de commande : docker compose run --rm cli wp <commande>
+  cli:
+    image: wordpress:cli-php8.3
+    user: "33:33"          # même utilisateur que www-data dans l'image wordpress
+    profiles: ["outils"]   # ne démarre pas avec « up », seulement avec « run »
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *wp_env
+      HOME: /tmp
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    volumes: *wp_volumes
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+volumes:
+  db_data:
+  wp_data:

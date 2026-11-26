@@ -9,6 +9,6 @@ Gratuit : en mode test, aucun argent ne circule.
 2. Créer un compte Stripe et rester en **mode test** : ne pas activer le compte, ne donner aucune information bancaire.
 3. Connecté en administrateur : WooCommerce > Réglages > Paiements > Stripe, activer le mode test, coller ses clés `pk_test` et `sk_test`, activer la carte.
 4. Payer une commande avec la carte de test `4242 4242 4242 4242`, date future, code `123`.
-5. Vérifier la commande « En cours » et l'e-mail dans Mailpit (http://localhost:8083).
+5. Vérifier la commande « En cours » et l'e-mail dans Mailpit (http://localhost:8025).
 
 **Ne jamais mettre les clés dans Git, ni dans la sauvegarde de démonstration (partie 7).**

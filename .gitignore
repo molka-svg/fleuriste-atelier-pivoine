@@ -26,7 +26,10 @@ Thumbs.db
 !theme/atelier-pivoine/index.php
 
 # Fichiers de travail locaux, à ne pas partager
-sauvegardes/
+sauvegardes/*
+!sauvegardes/.gitkeep
+!sauvegardes/base-demo.sql
+!sauvegardes/medias-demo.tar.gz
 docs/photos-proposees.html
 docs/propositions-accueil/
 *.bak
